@@ -1,4 +1,4 @@
-# "平安"APP 开发计划 v1.0
+# "称平安"APP 开发计划 v1.0
 
 ## 📋 项目概述
 
@@ -24,42 +24,47 @@
 
 ## 🎯 开发阶段规划
 
-### 阶段 0: 环境准备与项目初始化（预计2天）
+### 阶段 0: 环境准备与项目初始化（预计2天）✅ **已完成**
 
-- [ ] **0.1 创建项目目录结构**
-  - 创建 `backend/` 目录用于NestJS后端
-  - 创建 `mobile/` 目录用于React Native前端
-  - 创建 `docs/` 目录存放文档
+- [x] **0.1 创建项目目录结构** ✅
+  - ✅ 创建 `backend/` 目录用于NestJS后端
+  - ✅ 创建 `mobile/` 目录用于React Native前端
+  - ✅ 创建 `docs/` 目录存放文档
 
-- [ ] **0.2 后端项目初始化**
-  - 文件: 全局安装 `@nestjs/cli`
-  - 文件: 创建 NestJS 项目于 `backend/`
-  - 文件: 配置 TypeScript 编译选项
-  - 文件: 安装核心依赖（typeorm, pg, redis, class-validator等）
-  - 文件: 配置 ESLint + Prettier 代码规范
+- [x] **0.2 后端项目初始化** ✅
+  - ✅ 全局安装 `@nestjs/cli`
+  - ✅ 创建 NestJS 项目于 `backend/`
+  - ✅ 配置 TypeScript 编译选项（已由nest cli自动完成）
+  - ✅ 安装核心依赖（typeorm, pg, redis, class-validator, @nestjs/jwt, @nestjs/passport等）
+  - ✅ 配置 ESLint + Prettier 代码规范（已由nest cli自动完成）
+  - ✅ 创建 `.env` 和 `.env.example` 配置文件
 
-- [ ] **0.3 前端项目初始化**
-  - 文件: 安装 Expo CLI
-  - 文件: 创建 React Native 项目于 `mobile/`
-  - 文件: 安装导航库 `@react-navigation/native`
-  - 文件: 安装UI组件库（如 React Native Paper 或 Ant Design Mobile RN）
-  - 文件: 配置 TypeScript 支持
+- [x] **0.3 前端项目初始化** ✅
+  - ✅ 安装 Expo CLI（使用npx方式）
+  - ✅ 创建 React Native 项目于 `mobile/`（使用blank-typescript模板）
+  - ✅ 安装导航库 `@react-navigation/native`、`@react-navigation/native-stack`、`@react-navigation/bottom-tabs`
+  - ✅ 安装必要依赖（react-native-screens, react-native-safe-area-context, axios）
+  - ✅ 配置 TypeScript 支持（已由expo自动完成）
 
-- [ ] **0.4 数据库环境准备**
+- [ ] **0.4 数据库环境准备** ⚠️ 待完成
   - 本地安装 PostgreSQL（或使用Docker）
   - 本地安装 Redis（或使用Docker）
   - 创建开发数据库 `pingan_dev`
 
-- [ ] **0.5 阿里云账号准备**
+- [ ] **0.5 阿里云账号准备** ⚠️ 后续完成
   - 注册阿里云账号
   - 开通短信服务（申请签名和模板）
   - 开通邮件推送服务
   - 获取 AccessKey（用于后端调用）
+  - 📝 注：可在后续开发中逐步完成
 
 **验证标准**: 
-- 后端项目能成功启动（`npm run start:dev`）
-- 前端项目能在模拟器/真机运行（`expo start`）
-- 数据库连接测试通过
+- ✅ 后端项目能成功启动（`npm run start:dev`）- 已验证
+- ⚠️ 前端项目能在模拟器/真机运行（`expo start`）- 待验证
+- ⚠️ 数据库连接测试通过 - 待配置数据库后验证
+
+**完成时间**: 2026-01-22 19:52
+**下一步**: 进入阶段1 - 后端核心模块开发
 
 ---
 
@@ -208,7 +213,7 @@
 - [ ] **1.4.2 集成阿里云短信服务**
   - 涉及文件: `sms.service.ts`
   - 功能: 发送"未签到警告"短信
-  - 模板内容: "【平安】您的亲友{userName}已连续{days}天未签到，请及时关注其安全状况。"
+  - 模板内容: "【称平安】您的亲友{userName}已连续{days}天未签到，请及时关注其安全状况。"
 
 - [ ] **1.4.3 集成阿里云邮件推送**
   - 涉及文件: `email.service.ts`
