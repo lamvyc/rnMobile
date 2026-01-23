@@ -31,9 +31,9 @@ export class UsersService {
     return this.findById(id);
   }
 
-  async updateLastCheckin(userId: string): Promise<void> {
+  async updateLastCheckin(userId: string, checkinTime: Date): Promise<void> {
     await this.userRepository.update(userId, {
-      lastCheckinAt: new Date(),
+      lastCheckinAt: checkinTime,
     });
   }
 }
