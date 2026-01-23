@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // 全局验证管道
   app.useGlobalPipes(
     new ValidationPipe({
@@ -13,12 +13,13 @@ async function bootstrap() {
       transform: true, // 自动转换类型
     }),
   );
-  
+
   // 启用 CORS（允许前端调用）
   app.enableCors();
-  
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
+
 bootstrap();

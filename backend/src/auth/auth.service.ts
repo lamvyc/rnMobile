@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { InjectRedis } from '@nestjs-modules/ioredis';
@@ -31,10 +35,10 @@ export class AuthService {
     }
 
     const code = this.generateCode();
-    
+
     // 存储验证码，5分钟过期
     await this.redis.setex(`sms:code:${phone}`, 300, code);
-    
+
     // 记录发送时间
     await this.redis.setex(`sms:last:${phone}`, 60, Date.now().toString());
 
@@ -45,10 +49,13 @@ export class AuthService {
   }
 
   // 验证码登录
-  async login(phone: string, code: string): Promise<{ accessToken: string; user: any }> {
+  async login(
+    phone: string,
+    code: string,
+  ): Promise<{ accessToken: string; user: any }> {
     // 验证验证码
     const storedCode = await this.redis.get(`sms:code:${phone}`);
-    
+
     if (!storedCode) {
       throw new UnauthorizedException('验证码已过期');
     }

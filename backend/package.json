@@ -1,7 +1,7 @@
 {
-  "name": "backend",
+  "name": "chengpingan-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "称平安APP后端服务",
   "author": "",
   "private": true,
   "license": "UNLICENSED",

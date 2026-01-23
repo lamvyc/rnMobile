@@ -20,7 +20,7 @@ if (!global.crypto) {
       isGlobal: true,
       envFilePath: '.env',
     }),
-    
+
     // TypeORM 数据库配置
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -37,7 +37,7 @@ if (!global.crypto) {
       }),
       inject: [ConfigService],
     }),
-    
+
     // Redis 配置
     RedisModule.forRootAsync({
       imports: [ConfigModule],
@@ -47,7 +47,7 @@ if (!global.crypto) {
       }),
       inject: [ConfigService],
     }),
-    
+
     UsersModule,
     AuthModule,
   ],
