@@ -9,9 +9,11 @@ import {
   CheckinHistoryDto,
 } from './dto/checkin-response.dto';
 
+// 让类变成可注入的 Service
 @Injectable()
 export class CheckinService {
   constructor(
+    // 注入该实体的数据库仓库用于 CRUD。
     @InjectRepository(Checkin)
     private checkinRepository: Repository<Checkin>,
     private usersService: UsersService,
