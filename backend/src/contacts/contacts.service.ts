@@ -14,7 +14,7 @@ export class ContactsService {
 
   /**
    * 添加联系人
-   * 限制：每个用户最多1个联系人（首版）
+   * 限制：每个用户最多3个联系人
    */
   async create(userId: string, createContactDto: CreateContactDto): Promise<Contact> {
     // 检查是否已存在联系人
@@ -22,15 +22,18 @@ export class ContactsService {
       where: { userId },
     });
 
-    if (existingCount >= 1) {
-      throw new BadRequestException('每个用户最多只能添加1个紧急联系人');
+    if (existingCount >= 3) {
+      throw new BadRequestException('每个用户最多只能添加3个紧急联系人');
     }
+
+    // 动态分配优先级：按添加顺序递增
+    const nextPriority = existingCount + 1;
 
     // 创建联系人
     const contact = this.contactRepository.create({
       userId,
       ...createContactDto,
-      priority: 1, // 首版固定为1
+      priority: nextPriority,
     });
 
     return await this.contactRepository.save(contact);

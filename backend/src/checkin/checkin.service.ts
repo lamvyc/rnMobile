@@ -57,7 +57,7 @@ export class CheckinService {
     return {
       message: '签到成功',
       checkinDate: today,
-      checkinTime: now,
+      checkinTime: this.formatDateTime(now),
       consecutiveDays,
       totalDays,
     };
@@ -114,7 +114,7 @@ export class CheckinService {
     return {
       history: history.map((item) => ({
         checkinDate: item.checkinDate,
-        checkinTime: item.checkinTime,
+        checkinTime: this.formatDateTime(item.checkinTime),
       })),
       consecutiveDays,
       totalDays,
@@ -182,5 +182,18 @@ export class CheckinService {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * 格式化时间为 YYYY-MM-DD HH:mm:ss
+   */
+  private formatDateTime(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 }

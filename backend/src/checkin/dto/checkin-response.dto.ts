@@ -7,8 +7,8 @@ export class CheckinResponseDto {
   @ApiProperty({ description: '签到日期', example: '2024-01-15' })
   checkinDate: string;
 
-  @ApiProperty({ description: '签到时间' })
-  checkinTime: Date;
+  @ApiProperty({ description: '签到时间', example: '2024-01-15 14:30:00' })
+  checkinTime: string;
 
   @ApiProperty({ description: '连续签到天数', example: 7 })
   consecutiveDays: number;
@@ -35,8 +35,8 @@ export class CheckinHistoryItemDto {
   @ApiProperty({ description: '签到日期', example: '2024-01-15' })
   checkinDate: string;
 
-  @ApiProperty({ description: '签到时间' })
-  checkinTime: Date;
+  @ApiProperty({ description: '签到时间', example: '2024-01-15 14:30:00' })
+  checkinTime: string;
 }
 
 export class CheckinHistoryDto {

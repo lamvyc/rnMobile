@@ -22,6 +22,19 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
+  /**
+   * 格式化时间为 YYYY-MM-DD HH:mm:ss
+   */
+  private formatDateTime(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
   @Post()
   @ApiOperation({ summary: '添加联系人', description: '为当前用户添加紧急联系人' })
   @ApiResponse({ status: 201, description: '联系人添加成功' })
@@ -39,7 +52,7 @@ export class ContactsController {
         email: contact.email,
         relationship: contact.relationship,
         isVerified: contact.isVerified,
-        createdAt: contact.createdAt,
+        createdAt: this.formatDateTime(contact.createdAt),
       },
     };
   }
@@ -60,8 +73,8 @@ export class ContactsController {
         relationship: contact.relationship,
         priority: contact.priority,
         isVerified: contact.isVerified,
-        createdAt: contact.createdAt,
-        updatedAt: contact.updatedAt,
+        createdAt: this.formatDateTime(contact.createdAt),
+        updatedAt: this.formatDateTime(contact.updatedAt),
       })),
       total: contacts.length,
     };
@@ -85,8 +98,8 @@ export class ContactsController {
         relationship: contact.relationship,
         priority: contact.priority,
         isVerified: contact.isVerified,
-        createdAt: contact.createdAt,
-        updatedAt: contact.updatedAt,
+        createdAt: this.formatDateTime(contact.createdAt),
+        updatedAt: this.formatDateTime(contact.updatedAt),
       },
     };
   }
@@ -114,7 +127,7 @@ export class ContactsController {
         email: contact.email,
         relationship: contact.relationship,
         isVerified: contact.isVerified,
-        updatedAt: contact.updatedAt,
+        updatedAt: this.formatDateTime(contact.updatedAt),
       },
     };
   }
