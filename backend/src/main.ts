@@ -2,9 +2,26 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { CustomLoggerService } from './common/logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true, // 缓冲日志直到自定义 Logger 就绪
+  });
+
+  // 使用自定义日志服务
+  const logger = app.get(CustomLoggerService);
+  app.useLogger(logger);
+
+  // 全局异常过滤器（注意顺序：先捕获所有异常，再处理HTTP异常）
+  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  // 全局响应拦截器
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   // 全局验证管道
   app.useGlobalPipes(
@@ -12,6 +29,16 @@ async function bootstrap() {
       whitelist: true, // 自动删除非白名单属性
       forbidNonWhitelisted: true, // 遇到非白名单属性时抛出错误
       transform: true, // 自动转换类型
+      transformOptions: {
+        enableImplicitConversion: true, // 启用隐式类型转换
+      },
+      // 自定义验证错误格式
+      exceptionFactory: (errors) => {
+        const messages = errors.map((error) => {
+          return Object.values(error.constraints || {}).join(', ');
+        });
+        return new Error(messages.join('; '));
+      },
     }),
   );
 
@@ -45,8 +72,14 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
-  console.log(`📚 Swagger docs available at: http://localhost:${port}/api-docs`);
+  
+  // 使用日志服务输出启动信息
+  logger.log(`🚀 Application is running on: http://localhost:${port}`, 'Bootstrap');
+  logger.log(`📚 Swagger docs available at: http://localhost:${port}/api-docs`, 'Bootstrap');
+  logger.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`, 'Bootstrap');
 }
 
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('Failed to start application:', error);
+  process.exit(1);
+});

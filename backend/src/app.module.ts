@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@nestjs-modules/ioredis';
@@ -10,6 +10,7 @@ import { CheckinModule } from './checkin/checkin.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { LoggerModule, HttpLoggerMiddleware } from './common/logger';
 import * as crypto from 'crypto';
 
 // Node.js v18 兼容性修复
@@ -19,6 +20,9 @@ if (!global.crypto) {
 
 @Module({
   imports: [
+    // 日志模块（全局）
+    LoggerModule,
+
     // 配置模块
     ConfigModule.forRoot({
       isGlobal: true,
@@ -62,4 +66,9 @@ if (!global.crypto) {
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // 应用 HTTP 日志中间件到所有路由
+    consumer.apply(HttpLoggerMiddleware).forRoutes('*');
+  }
+}

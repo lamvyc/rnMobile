@@ -14,6 +14,7 @@ import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { DateUtil } from '../common/utils';
 
 @ApiTags('联系人')
 @ApiBearerAuth('JWT-auth')
@@ -21,19 +22,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
-
-  /**
-   * 格式化时间为 YYYY-MM-DD HH:mm:ss
-   */
-  private formatDateTime(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  }
 
   @Post()
   @ApiOperation({ summary: '添加联系人', description: '为当前用户添加紧急联系人' })
@@ -52,7 +40,7 @@ export class ContactsController {
         email: contact.email,
         relationship: contact.relationship,
         isVerified: contact.isVerified,
-        createdAt: this.formatDateTime(contact.createdAt),
+        createdAt: DateUtil.formatDateTime(contact.createdAt),
       },
     };
   }
@@ -73,8 +61,8 @@ export class ContactsController {
         relationship: contact.relationship,
         priority: contact.priority,
         isVerified: contact.isVerified,
-        createdAt: this.formatDateTime(contact.createdAt),
-        updatedAt: this.formatDateTime(contact.updatedAt),
+        createdAt: DateUtil.formatDateTime(contact.createdAt),
+        updatedAt: DateUtil.formatDateTime(contact.updatedAt),
       })),
       total: contacts.length,
     };
@@ -98,8 +86,8 @@ export class ContactsController {
         relationship: contact.relationship,
         priority: contact.priority,
         isVerified: contact.isVerified,
-        createdAt: this.formatDateTime(contact.createdAt),
-        updatedAt: this.formatDateTime(contact.updatedAt),
+        createdAt: DateUtil.formatDateTime(contact.createdAt),
+        updatedAt: DateUtil.formatDateTime(contact.updatedAt),
       },
     };
   }
@@ -127,7 +115,7 @@ export class ContactsController {
         email: contact.email,
         relationship: contact.relationship,
         isVerified: contact.isVerified,
-        updatedAt: this.formatDateTime(contact.updatedAt),
+        updatedAt: DateUtil.formatDateTime(contact.updatedAt),
       },
     };
   }

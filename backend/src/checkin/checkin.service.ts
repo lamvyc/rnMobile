@@ -8,6 +8,7 @@ import {
   CheckinStatusDto,
   CheckinHistoryDto,
 } from './dto/checkin-response.dto';
+import { DateUtil } from '../common/utils';
 
 // 让类变成可注入的 Service
 @Injectable()
@@ -57,7 +58,7 @@ export class CheckinService {
     return {
       message: '签到成功',
       checkinDate: today,
-      checkinTime: this.formatDateTime(now),
+      checkinTime: DateUtil.formatDateTime(now),
       consecutiveDays,
       totalDays,
     };
@@ -96,9 +97,8 @@ export class CheckinService {
    * 查询签到历史（最近30天）
    */
   async getCheckinHistory(userId: string): Promise<CheckinHistoryDto> {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const startDate = this.formatDateString(thirtyDaysAgo);
+    const thirtyDaysAgo = DateUtil.addDays(new Date(), -30);
+    const startDate = DateUtil.formatDate(thirtyDaysAgo);
 
     const history = await this.checkinRepository.find({
       where: {
@@ -114,7 +114,7 @@ export class CheckinService {
     return {
       history: history.map((item) => ({
         checkinDate: item.checkinDate,
-        checkinTime: this.formatDateTime(item.checkinTime),
+        checkinTime: DateUtil.formatDateTime(item.checkinTime),
       })),
       consecutiveDays,
       totalDays,
@@ -145,7 +145,7 @@ export class CheckinService {
 
     for (const checkin of checkins) {
       const checkinDateStr = checkin.checkinDate;
-      const expectedDateStr = this.formatDateString(currentDate);
+      const expectedDateStr = DateUtil.formatDate(currentDate);
 
       if (checkinDateStr === expectedDateStr) {
         consecutiveDays++;
@@ -171,29 +171,6 @@ export class CheckinService {
    * 获取今天的日期字符串 (YYYY-MM-DD)
    */
   private getTodayDateString(): string {
-    return this.formatDateString(new Date());
-  }
-
-  /**
-   * 格式化日期为 YYYY-MM-DD
-   */
-  private formatDateString(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  /**
-   * 格式化时间为 YYYY-MM-DD HH:mm:ss
-   */
-  private formatDateTime(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    return DateUtil.getTodayDate();
   }
 }

@@ -15,7 +15,9 @@ export class EmailService {
    * 开发环境：模拟发送（打印到控制台）
    * 生产环境：TODO - 集成阿里云邮件推送
    */
-  async sendEmail(options: EmailOptions): Promise<{ success: boolean; error?: string }> {
+  async sendEmail(
+    options: EmailOptions,
+  ): Promise<{ success: boolean; error?: string }> {
     const { to, subject, html } = options;
 
     try {
@@ -25,10 +27,10 @@ export class EmailService {
         this.logger.log(`  收件人: ${to}`);
         this.logger.log(`  主题: ${subject}`);
         this.logger.log(`  内容: ${html.substring(0, 100)}...`);
-        
+
         // 模拟网络延迟
-        await new Promise(resolve => setTimeout(resolve, 150));
-        
+        await new Promise((resolve) => setTimeout(resolve, 150));
+
         return { success: true };
       }
 
@@ -63,7 +65,6 @@ export class EmailService {
       this.logger.log(`  收件人: ${to}`);
       this.logger.log(`  主题: ${subject}`);
       return { success: true };
-
     } catch (error) {
       this.logger.error(`邮件发送异常: ${error.message}`, error.stack);
       return { success: false, error: error.message };
@@ -79,7 +80,7 @@ export class EmailService {
     days: number,
   ): Promise<{ success: boolean; error?: string }> {
     const subject = `【称平安】您的亲友${userName}已${days}天未签到`;
-    
+
     const html = `
 <!DOCTYPE html>
 <html>
