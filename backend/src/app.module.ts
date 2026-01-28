@@ -11,6 +11,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { LoggerModule, HttpLoggerMiddleware } from './common/logger';
+import { HealthModule } from './common/health';
 import * as crypto from 'crypto';
 
 // Node.js v18 兼容性修复
@@ -55,6 +56,9 @@ if (!global.crypto) {
       }),
       inject: [ConfigService],
     }),
+
+    // 健康检查模块（全局）
+    HealthModule,
 
     UsersModule,
     AuthModule,

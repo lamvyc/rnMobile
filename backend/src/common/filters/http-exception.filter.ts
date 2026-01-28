@@ -3,7 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -25,7 +24,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // 获取异常响应内容
     const exceptionResponse = exception.getResponse();
-    
+
     // 提取错误消息
     let message = exception.message;
     if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {

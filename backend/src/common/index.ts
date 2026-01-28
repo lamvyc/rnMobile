@@ -13,3 +13,6 @@ export * from './logger';
 
 // Utils
 export * from './utils';
+
+// Health
+export * from './health';

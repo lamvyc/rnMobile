@@ -65,6 +65,7 @@ async function bootstrap() {
     .addTag('签到', '每日签到相关接口')
     .addTag('联系人', '紧急联系人管理接口')
     .addTag('用户', '用户管理相关接口')
+    .addTag('健康检查', '系统健康状态监控接口')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -72,11 +73,20 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  
+
   // 使用日志服务输出启动信息
-  logger.log(`🚀 Application is running on: http://localhost:${port}`, 'Bootstrap');
-  logger.log(`📚 Swagger docs available at: http://localhost:${port}/api-docs`, 'Bootstrap');
-  logger.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`, 'Bootstrap');
+  logger.log(
+    `🚀 Application is running on: http://localhost:${port}`,
+    'Bootstrap',
+  );
+  logger.log(
+    `📚 Swagger docs available at: http://localhost:${port}/api-docs`,
+    'Bootstrap',
+  );
+  logger.log(
+    `🌍 Environment: ${process.env.NODE_ENV || 'development'}`,
+    'Bootstrap',
+  );
 }
 
 bootstrap().catch((error) => {
