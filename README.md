@@ -39,7 +39,7 @@ rnMobile/
 ├── backend/          # NestJS 后端服务
 ├── mobile/           # React Native 移动端
 ├── docs/             # 项目文档
-├── .comate/          # 开发计划
+├── .plan/          # 开发计划
 │   └── plan.md       # 详细开发计划
 └── README.md         # 项目说明
 ```
@@ -71,7 +71,7 @@ expo start
 
 ## 📋 开发计划
 
-详细的开发计划请查看 [.comate/plan.md](.comate/plan.md)
+详细的开发计划请查看 [.plan/plan.md](.plan/plan.md)
 
 ## 📝 开发进度
 

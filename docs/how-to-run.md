@@ -135,7 +135,7 @@ kill -9 <PID>
 
 ## 📚 更多文档
 
-- [开发计划](.comate/plan.md)
+- [开发计划](.plan/plan.md)
 - [阶段1进度](docs/stage1-progress.md)
 - [阶段1.1总结](docs/stage1.1-summary.md)
 

@@ -53,7 +53,7 @@
 ### 3. 文档（已确认使用"称平安"）
 
 - ✅ README.md - 标题和描述
-- ✅ .comate/plan.md - 主计划标题和短信模板
+- ✅ .plan/plan.md - 主计划标题和短信模板
 - ✅ docs/how-to-run.md - 标题
 - ✅ docs/stage0-summary.md
 - ✅ docs/stage1-progress.md

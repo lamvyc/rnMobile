@@ -303,151 +303,123 @@ psql查询: SELECT * FROM users;
 
 ---
 
-### 阶段 2: 移动端开发（预计7-10天）
+### 阶段 2: 移动端开发（预计7-10天）✅ **已完成**
 
-#### 2.1 项目基础搭建（1天）
+#### 2.1 项目基础搭建（1天）✅ **已完成**
 
-- [ ] **2.1.1 配置导航结构**
-  - 文件: `mobile/src/navigation/AppNavigator.tsx`
-  - 页面路由:
-    - Auth Stack (登录/注册)
-    - Main Stack (主界面/设置)
+- [x] **2.1.1 配置导航结构** ✅
+  - ✅ 文件: `mobile/src/navigation/AppNavigator.tsx`
+  - ✅ Auth Stack (登录)
+  - ✅ Main Tab (首页/联系人/我的)
+  - ✅ 嵌套 Stack: Contacts Stack, Profile Stack
 
-- [ ] **2.1.2 HTTP请求封装**
-  - 文件: `mobile/src/services/api.ts`
-  - 功能: Axios 实例配置
-  - 功能: 请求/响应拦截器
-  - 功能: Token 自动注入
+- [x] **2.1.2 HTTP请求封装** ✅
+  - ✅ 文件: `mobile/src/services/api.ts`
+  - ✅ Axios 实例配置 + 超时
+  - ✅ 请求拦截器：Token 自动注入
+  - ✅ 响应拦截器：统一错误格式
 
-- [ ] **2.1.3 状态管理**
-  - 选择方案: Context API 或 Redux Toolkit
-  - 文件: `mobile/src/store/` 或 `mobile/src/contexts/`
-  - 管理: 用户登录状态、签到状态
+- [x] **2.1.3 状态管理** ✅
+  - ✅ 方案: Context API
+  - ✅ 文件: `mobile/src/contexts/AuthContext.tsx`
+  - ✅ 管理: 用户登录状态、login/logout/refreshUser
 
-- [ ] **2.1.4 本地存储封装**
-  - 文件: `mobile/src/utils/storage.ts`
-  - 功能: AsyncStorage 封装
-  - 存储: JWT Token, 用户信息
+- [x] **2.1.4 本地存储封装** ✅
+  - ✅ 文件: `mobile/src/utils/storage.ts`
+  - ✅ AsyncStorage 封装（getToken/setToken/clearAuth）
+  - ✅ 存储: JWT Token, 用户信息
 
-**验证标准**:
-- 导航跳转正常
-- HTTP请求能正确调用后端接口
-- Token 持久化存储
+- [x] **2.1.5 API配置** ✅
+  - ✅ 文件: `mobile/src/config.ts`（开发/生产环境切换）
 
-#### 2.2 登录注册页面（2天）
+**验证标准**: ✅ 结构完整，待运行时验证
 
-- [ ] **2.2.1 登录页面开发**
-  - 文件: `mobile/src/screens/LoginScreen.tsx`
-  - UI组件:
-    - 手机号输入框（带格式校验）
-    - 验证码输入框
-    - "获取验证码"按钮（倒计时60秒）
-    - "登录"按钮
-  - 交互逻辑:
-    - 调用 `POST /auth/send-code`
-    - 调用 `POST /auth/login`
-    - 保存 Token 并跳转主页
+**完成时间**: 2026-02-28
 
-- [ ] **2.2.2 表单验证**
-  - 手机号格式验证（11位数字）
-  - 验证码格式验证（6位数字）
-  - 错误提示友好展示
+#### 2.2 登录注册页面（2天）✅ **已完成**
 
-- [ ] **2.2.3 首次使用引导**
-  - 文件: `mobile/src/screens/OnboardingScreen.tsx`
-  - 功能: 轮播图介绍APP功能
-  - 功能: 首次登录后显示，可跳过
+- [x] **2.2.1 登录页面开发** ✅
+  - ✅ 文件: `mobile/src/screens/LoginScreen.tsx`
+  - ✅ 手机号输入框（带格式校验）
+  - ✅ 验证码输入框 + 60秒倒计时按钮
+  - ✅ 登录按钮（自动禁用/启用）
+  - ✅ 入场动画（fade + slide）
+  - ✅ 调用 `POST /auth/send-code` + `POST /auth/login`
+  - ✅ 保存 Token 并跳转主页
 
-**验证标准**:
-- 能成功接收验证码
-- 能正确登录并保存Token
-- UI界面美观友好
+- [x] **2.2.2 表单验证** ✅
+  - ✅ 手机号格式验证（1[3-9]XXXXXXXXX）
+  - ✅ 验证码格式验证（6位数字）
+  - ✅ 错误提示 Alert
 
-#### 2.3 主页-签到功能（2天）
+- [ ] **2.2.3 首次使用引导（暂跳过）**
+  - 后续版本实现
 
-- [ ] **2.3.1 主页布局**
-  - 文件: `mobile/src/screens/HomeScreen.tsx`
-  - UI组件:
-    - 顶部用户信息（昵称/头像）
-    - 中间大按钮: "今日签到" / "已签到"
-    - 底部签到日历视图（展示最近30天）
-    - 连续签到天数展示
+**验证标准**: ✅ UI完成，待联调测试
 
-- [ ] **2.3.2 签到按钮交互**
-  - 状态切换: 未签到 / 已签到
-  - 点击效果: 动画反馈（如涟漪效果）
-  - 调用接口: `POST /checkin`
-  - 成功提示: Toast 或 Modal
+#### 2.3 主页-签到功能（2天）✅ **已完成**
 
-- [ ] **2.3.3 签到日历组件**
-  - 文件: `mobile/src/components/CheckinCalendar.tsx`
-  - 功能: 展示最近30天签到状态
-  - 样式: 已签到显示绿色圆点，未签到灰色
+- [x] **2.3.1 主页布局** ✅
+  - ✅ 文件: `mobile/src/screens/HomeScreen.tsx`
+  - ✅ 顶部问候语 + 日期
+  - ✅ 中间大圆形签到按钮（脉冲动画）
+  - ✅ 签到状态横幅
+  - ✅ 下拉刷新
 
-- [ ] **2.3.4 签到统计卡片**
-  - 展示: 连续签到天数
-  - 展示: 累计签到天数
-  - 展示: 本月签到天数
+- [x] **2.3.2 签到按钮交互** ✅
+  - ✅ 未签到/已签到状态切换
+  - ✅ 点击缩放动画 + 未签到脉冲动画
+  - ✅ 调用 `POST /checkin` + Alert提示
 
-**验证标准**:
-- 签到功能正常
-- 日历正确显示签到记录
-- 统计数据准确
+- [x] **2.3.3 签到日历组件** ✅
+  - ✅ 文件: `mobile/src/components/CheckinCalendar.tsx`
+  - ✅ 展示最近35天（5行×7列）
+  - ✅ 已签到绿色填充，今日边框高亮
 
-#### 2.4 紧急联系人管理（2天）
+- [x] **2.3.4 签到统计卡片** ✅
+  - ✅ 连续签到天数、本月签到、累计签到
 
-- [ ] **2.4.1 联系人列表页**
-  - 文件: `mobile/src/screens/ContactsScreen.tsx`
-  - UI组件:
-    - 联系人卡片（姓名、关系、手机号）
-    - "添加联系人"按钮
-    - 空状态提示
+**验证标准**: ✅ UI完成，待联调测试
 
-- [ ] **2.4.2 添加联系人页面**
-  - 文件: `mobile/src/screens/AddContactScreen.tsx`
-  - 表单字段:
-    - 姓名输入框
-    - 关系选择（家人/朋友/其他）
-    - 手机号输入框
-    - 邮箱输入框（可选）
-  - 提交: 调用 `POST /contacts`
+#### 2.4 紧急联系人管理（2天）✅ **已完成**
 
-- [ ] **2.4.3 编辑/删除联系人**
-  - 长按卡片显示操作菜单
-  - 编辑: 调用 `PUT /contacts/:id`
-  - 删除: 二次确认后调用 `DELETE /contacts/:id`
+- [x] **2.4.1 联系人列表页** ✅
+  - ✅ 文件: `mobile/src/screens/ContactsScreen.tsx`
+  - ✅ 联系人卡片（姓名/关系/手机/邮箱）
+  - ✅ 空状态页面（带引导按钮）
+  - ✅ 首版限制1个提示
 
-**验证标准**:
-- 能添加和管理联系人
-- 首版限制1个联系人生效
-- 表单验证正确
+- [x] **2.4.2 添加联系人页面** ✅
+  - ✅ 文件: `mobile/src/screens/AddContactScreen.tsx`
+  - ✅ 姓名/手机/邮箱/关系选择
+  - ✅ 表单验证 + 错误提示
+  - ✅ 调用 `POST /contacts`
 
-#### 2.5 个人中心页面（1天）
+- [x] **2.4.3 编辑/删除联系人** ✅
+  - ✅ 编辑：复用 AddContactScreen
+  - ✅ 删除：二次确认 Alert + `DELETE /contacts/:id`
 
-- [ ] **2.5.1 个人信息页**
-  - 文件: `mobile/src/screens/ProfileScreen.tsx`
-  - UI组件:
-    - 头像（可点击上传）
-    - 昵称（可编辑）
-    - 手机号（不可编辑）
-    - 注册时间
+**验证标准**: ✅ UI完成，待联调测试
 
-- [ ] **2.5.2 设置页面**
-  - 文件: `mobile/src/screens/SettingsScreen.tsx`
-  - 功能项:
-    - 关于我们
-    - 用户协议
-    - 隐私政策
-    - 退出登录
+#### 2.5 个人中心页面（1天）✅ **已完成**
 
-- [ ] **2.5.3 头像上传（可选）**
-  - 调用相册/相机
-  - 上传到阿里云OSS
-  - 更新用户头像URL
+- [x] **2.5.1 个人信息页** ✅
+  - ✅ 文件: `mobile/src/screens/ProfileScreen.tsx`
+  - ✅ 头像首字母显示
+  - ✅ 昵称内联编辑
+  - ✅ 手机号/注册时间/账号状态展示
 
-**验证标准**:
-- 个人信息展示正确
-- 退出登录功能正常
+- [x] **2.5.2 设置页面** ✅
+  - ✅ 文件: `mobile/src/screens/SettingsScreen.tsx`
+  - ✅ 用户协议/隐私政策/关于/意见反馈
+  - ✅ 退出登录（二次确认）
+
+- [ ] **2.5.3 头像上传（后续迭代）**
+
+**验证标准**: ✅ UI完成，待联调测试
+
+**完成时间**: 2026-02-28
+**下一步**: 进入阶段3 - 前后端联调与测试
 
 ---
 

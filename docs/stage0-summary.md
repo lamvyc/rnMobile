@@ -8,7 +8,7 @@ rnMobile/
 ├── backend/          # NestJS 后端服务
 ├── mobile/           # React Native 移动端
 ├── docs/             # 项目文档
-├── .comate/          # 开发计划
+├── .plan/          # 开发计划
 │   └── plan.md       # 详细开发计划
 ├── .gitignore        # Git忽略配置
 └── README.md         # 项目说明
@@ -49,7 +49,7 @@ rnMobile/
 
 ### 4. 项目文档 ✅
 - ✅ README.md - 项目说明文档
-- ✅ .comate/plan.md - 详细开发计划
+- ✅ .plan/plan.md - 详细开发计划
 - ✅ .gitignore - Git忽略配置
 
 ---
