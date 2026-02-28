@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>称平安 · UI 设计参考</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Noto Sans SC"', 'sans-serif'] },
+          colors: {
+            primary: {
+              50:  '#f0faf6', 100: '#dcf4e9', 200: '#bbe8d5',
+              300: '#87d4b5', 400: '#52b78e', 500: '#2ea078',
+              600: '#1e8461', 700: '#196b50', 800: '#175541', 900: '#144636'
+            },
+            warm: {
+              50: '#fafaf8', 100: '#f5f5f0', 200: '#eeede6',
+              300: '#e2e0d5', 400: '#ccc9b8', 500: '#b0ac98',
+              600: '#8f8b76', 700: '#726f5c', 800: '#5e5b4c', 900: '#4e4c40'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; }
+    .phone-frame {
+      width: 375px; height: 812px;
+      border-radius: 48px;
+      box-shadow: 0 0 0 10px #1a1a1a, 0 0 0 12px #333, 0 40px 80px rgba(0,0,0,0.35), inset 0 0 0 2px #000;
+      overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .phone-screen { width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; }
+    .phone-screen::-webkit-scrollbar { display: none; }
+    .status-bar {
+      height: 44px; display: flex; align-items: flex-end; padding: 0 24px 6px;
+      justify-content: space-between; font-size: 12px; font-weight: 600; flex-shrink: 0;
+    }
+    .tab-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 82px;
+      background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0,0,0,0.06);
+      display: flex; padding: 8px 0 20px;
+    }
+    .tab-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 2px; cursor: pointer; transition: all 0.2s;
+    }
+    .tab-item .material-icons-round { font-size: 22px; }
+    .tab-item span:last-child { font-size: 10px; font-weight: 500; }
+    .page { display: none; }
+    .page.active { display: flex; flex-direction: column; height: 100%; }
+    .scroll-content { flex: 1; overflow-y: auto; }
+    .scroll-content::-webkit-scrollbar { display: none; }
+    .card {
+      background: white; border-radius: 20px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.03);
+    }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .checkin-ring {
+      width: 180px; height: 180px; border-radius: 50%; position: relative;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .ring-pulse::after {
+      content: ''; position: absolute; inset: -8px; border-radius: 50%;
+      border: 2px solid rgba(46,160,120,0.3);
+      animation: ring-pulse 2s ease-out infinite;
+    }
+    .ring-pulse::before {
+      content: ''; position: absolute; inset: -18px; border-radius: 50%;
+      border: 1px solid rgba(46,160,120,0.15);
+      animation: ring-pulse 2s ease-out 0.4s infinite;
+    }
+    @keyframes ring-pulse {
+      0% { opacity: 1; transform: scale(0.9); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+    .cal-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+    .stat-card { background: white; border-radius: 16px; padding: 14px; flex: 1; }
+    .page-nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 24px; }
+    .nav-btn {
+      padding: 8px 18px; border-radius: 24px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
+    }
+    .nav-btn.active { background: #2ea078; color: white; }
+    .nav-btn:not(.active) { background: white; color: #2ea078; border-color: #bbe8d5; }
+    .nav-btn:hover:not(.active) { background: #f0faf6; }
+    /* Toggle switch */
+    .toggle { width: 44px; height: 26px; background: #2ea078; border-radius: 13px; position: relative; }
+    .toggle::after { content: ''; position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    /* Input field */
+    .field {
+      height: 52px; border-radius: 14px; border: 1.5px solid #e2e0d5;
+      background: #fafaf8; padding: 0 16px; font-size: 15px; width: 100%;
+      display: flex; align-items: center; color: #1a1a1a;
+    }
+    .field-focus { border-color: #2ea078; background: #f0faf6; }
+    /* Gradient bg */
+    .hero-grad { background: linear-gradient(160deg, #f0faf6 0%, #fafaf8 60%); }
+    /* Contact avatar */
+    .contact-avatar { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-100 to-slate-200 min-h-screen p-8" style="font-family:'Noto Sans SC',sans-serif">
+
+  <!-- 顶部标题 -->
+  <div class="text-center mb-10 animate__animated animate__fadeInDown">
+    <div class="inline-flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 rounded-2xl bg-primary-600 flex items-center justify-center shadow-lg">
+        <span class="material-icons-round text-white" style="font-size:22px">shield</span>
+      </div>
+      <h1 class="text-3xl font-black text-slate-800 tracking-tight">称平安</h1>
+      <span class="badge bg-primary-100 text-primary-700">UI 设计参考 v2</span>
+    </div>
+    <p class="text-slate-500 text-sm">替换 Emoji → Material Icons · 新配色 · 精细排版 · 真实质感</p>
+  </div>
+
+  <!-- 页面切换导航 -->
+  <div class="page-nav animate__animated animate__fadeIn">
+    <button class="nav-btn active" onclick="showPage('login')">登录页</button>
+    <button class="nav-btn" onclick="showPage('home')">签到主页</button>
+    <button class="nav-btn" onclick="showPage('contacts')">联系人</button>
+    <button class="nav-btn" onclick="showPage('profile')">个人中心</button>
+    <button class="nav-btn" onclick="showPage('settings')">设置</button>
+  </div>
+
+  <!-- 手机框 -->
+  <div class="flex justify-center animate__animated animate__fadeInUp" id="phone-container">
+    <div class="phone-frame">
+      <!-- Notch -->
+      <div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#1a1a1a;border-radius:20px;z-index:100"></div>
+
+      <div class="phone-screen bg-warm-50">
+
+        <!-- ===================== LOGIN PAGE ===================== -->
+        <div class="page active" id="page-login" style="background: linear-gradient(180deg, #f0faf6 0%, #fafaf8 100%)">
+          <div style="height:44px;flex-shrink:0"></div>
+          <div class="scroll-content px-6 pt-6 pb-8">
+            <!-- Logo -->
+            <div class="flex flex-col items-center mb-10">
+              <div class="w-20 h-20 rounded-[28px] bg-primary-600 flex items-center justify-center mb-4 shadow-xl" style="box-shadow:0 12px 32px rgba(30,132,97,0.35)">
+                <span class="material-icons-round text-white" style="font-size:40px">shield</span>
+              </div>
+              <h2 class="text-3xl font-black text-primary-900 tracking-tight mb-1">称平安</h2>
+              <p class="text-warm-500 text-sm">每日签到，守护平安</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="card p-6 mb-5">
+              <p class="text-base font-bold text-slate-800 mb-5">手机号登录</p>
+
+              <!-- Phone field -->
+              <div class="mb-4">
+                <label class="text-xs font-semibold text-slate-500 mb-2 block tracking-wide uppercase">手机号</label>
+                <div class="field field-focus flex items-center gap-3">
+                  <span class="material-icons-round text-primary-500" style="font-size:20px">smartphone</span>
+                  <span class="text-slate-400 text-sm flex-1">请输入手机号</span>
+                </div>
+              </div>
+
+              <!-- Code field -->
+              <div class="mb-5">
+                <label class="text-xs font-semibold text-slate-500 mb-2 block tracking-wide uppercase">验证码</label>
+                <div class="flex gap-2">
+                  <div class="field flex items-center gap-3" style="flex:1;height:52px">
+                    <span class="material-icons-round text-slate-400" style="font-size:20px">lock_outline</span>
+                    <span class="text-slate-400 text-sm">6位验证码</span>
+                  </div>
+                  <button class="px-4 rounded-2xl bg-primary-100 text-primary-700 text-xs font-bold" style="white-space:nowrap;height:52px">获取验证码</button>
+                </div>
+              </div>
+
+              <!-- Login button -->
+              <button class="w-full h-14 rounded-2xl text-white font-bold text-base flex items-center justify-center gap-2" style="background:linear-gradient(135deg, #2ea078, #196b50); box-shadow:0 8px 24px rgba(30,132,97,0.35)">
+                <span class="material-icons-round" style="font-size:20px">arrow_forward</span>
+                登录 / 注册
+              </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-3 mb-4">
+              <div style="flex:1;height:1px;background:#e2e0d5"></div>
+              <span class="text-xs text-warm-500">或者</span>
+              <div style="flex:1;height:1px;background:#e2e0d5"></div>
+            </div>
+
+            <!-- Guest button -->
+            <button class="w-full h-12 rounded-2xl border-2 border-primary-200 bg-primary-50 text-primary-700 font-semibold text-sm flex items-center justify-center gap-2" onclick="showPage('home')">
+              <span class="material-icons-round" style="font-size:18px">visibility</span>
+              免登录试用
+            </button>
+
+            <p class="text-center text-xs text-warm-500 mt-5">登录即代表同意《用户协议》和《隐私政策》</p>
+          </div>
+        </div>
+
+        <!-- ===================== HOME PAGE ===================== -->
+        <div class="page" id="page-home" style="background: linear-gradient(180deg, #f0faf6 0%, #fafaf8 50%)">
+          <div style="height:44px;flex-shrink:0"></div>
+          <div class="scroll-content px-5 pt-4 pb-28">
+            <!-- Top bar -->
+            <div class="flex justify-between items-center mb-6">
+              <div>
+                <p class="text-xs text-warm-500 font-medium">下午好</p>
+                <h2 class="text-xl font-black text-slate-800">体验用户</h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="badge bg-amber-100 text-amber-700">
+                  <span class="material-icons-round" style="font-size:12px">star</span>
+                  3天连续
+                </div>
+                <div class="w-10 h-10 rounded-2xl bg-primary-100 flex items-center justify-center">
+                  <span class="material-icons-round text-primary-600" style="font-size:20px">person</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Checkin button -->
+            <div class="flex justify-center mb-7">
+              <div class="relative" style="padding:20px">
+                <!-- Outer rings -->
+                <div style="position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(46,160,120,0.2)"></div>
+                <div style="position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(46,160,120,0.12)"></div>
+                <!-- Main button -->
+                <div class="checkin-ring ring-pulse cursor-pointer" style="background:linear-gradient(145deg, #2ea078, #196b50); box-shadow:0 16px 48px rgba(30,132,97,0.4), inset 0 1px 0 rgba(255,255,255,0.2)">
+                  <span class="material-icons-round text-white mb-1" style="font-size:40px">touch_app</span>
+                  <span class="text-white font-bold text-base">点击签到</span>
+                  <span class="text-primary-200 text-xs mt-0.5">今日未签到</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats row -->
+            <div class="flex gap-3 mb-4">
+              <div class="stat-card" style="box-shadow:0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);border-top:3px solid #f59e0b">
+                <span class="material-icons-round text-amber-500 mb-1" style="font-size:22px">local_fire_department</span>
+                <p class="text-2xl font-black text-amber-500">3</p>
+                <p class="text-xs text-warm-500 font-medium">连续签到天</p>
+              </div>
+              <div class="stat-card" style="box-shadow:0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);border-top:3px solid #3b82f6">
+                <span class="material-icons-round text-blue-500 mb-1" style="font-size:22px">calendar_month</span>
+                <p class="text-2xl font-black text-blue-500">8</p>
+                <p class="text-xs text-warm-500 font-medium">本月签到天</p>
+              </div>
+              <div class="stat-card" style="box-shadow:0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03);border-top:3px solid #2ea078">
+                <span class="material-icons-round text-primary-500 mb-1" style="font-size:22px">emoji_events</span>
+                <p class="text-2xl font-black text-primary-500">12</p>
+                <p class="text-xs text-warm-500 font-medium">累计签到天</p>
+              </div>
+            </div>
+
+            <!-- Status banner -->
+            <div class="flex items-center gap-3 p-3 rounded-2xl mb-4" style="background:#fef3c7">
+              <div class="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <span class="material-icons-round text-amber-600" style="font-size:18px">notifications_active</span>
+              </div>
+              <p class="text-xs text-amber-800 font-medium leading-relaxed flex-1">今日还未签到，联系人可能收到提醒哦</p>
+            </div>
+
+            <!-- Calendar card -->
+            <div class="card p-4">
+              <div class="flex justify-between items-center mb-3">
+                <p class="font-bold text-slate-700 text-sm">签到记录</p>
+                <span class="text-xs text-warm-500">2026年2月</span>
+              </div>
+              <!-- Weekdays -->
+              <div class="grid grid-cols-7 mb-2">
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">日</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">一</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">二</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">三</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">四</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">五</div>
+                <div class="text-center" style="font-size:10px;color:#b0ac98;font-weight:600;padding:3px 0">六</div>
+              </div>
+              <!-- Days (5 rows × 7) -->
+              <div id="cal-grid" class="grid grid-cols-7 gap-y-1"></div>
+              <!-- Legend -->
+              <div class="flex justify-center gap-4 mt-3">
+                <div class="flex items-center gap-1.5"><div style="width:8px;height:8px;border-radius:50%;background:#2ea078"></div><span style="font-size:11px;color:#8f8b76">已签到</span></div>
+                <div class="flex items-center gap-1.5"><div style="width:8px;height:8px;border-radius:50%;border:2px solid #2ea078"></div><span style="font-size:11px;color:#8f8b76">今天</span></div>
+                <div class="flex items-center gap-1.5"><div style="width:8px;height:8px;border-radius:50%;background:#e2e0d5"></div><span style="font-size:11px;color:#8f8b76">未签到</span></div>
+              </div>
+            </div>
+          </div>
+          <!-- Tab bar -->
+          <div class="tab-bar">
+            <div class="tab-item" onclick="showPage('home')">
+              <span class="material-icons-round" style="color:#2ea078;font-size:24px">check_circle</span>
+              <span style="color:#2ea078;font-size:10px;font-weight:700">签到</span>
+            </div>
+            <div class="tab-item" onclick="showPage('contacts')">
+              <span class="material-icons-round" style="color:#b0ac98">people_alt</span>
+              <span style="color:#b0ac98">联系人</span>
+            </div>
+            <div class="tab-item" onclick="showPage('profile')">
+              <span class="material-icons-round" style="color:#b0ac98">account_circle</span>
+              <span style="color:#b0ac98">我的</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== CONTACTS PAGE ===================== -->
+        <div class="page" id="page-contacts">
+          <div style="height:44px;flex-shrink:0"></div>
+          <!-- Guest banner -->
+          <div class="flex items-center gap-2 px-4 py-2" style="background:#fef3c7;flex-shrink:0">
+            <span class="material-icons-round text-amber-600" style="font-size:16px">visibility</span>
+            <span class="text-xs text-amber-800 font-medium flex-1">试用模式 · 数据仅供演示</span>
+            <button class="text-xs font-bold text-white bg-amber-400 px-3 py-1 rounded-lg">去登录</button>
+          </div>
+          <div class="scroll-content px-4 py-4 pb-28">
+            <!-- Header -->
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h2 class="text-xl font-black text-slate-800 mb-0.5">紧急联系人</h2>
+                <p class="text-xs text-warm-500">连续2天未签到将自动通知</p>
+              </div>
+            </div>
+
+            <!-- Contact card -->
+            <div class="card p-4 mb-3">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="contact-avatar bg-primary-100 text-primary-700">张</div>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="font-bold text-slate-800">张妈妈</span>
+                    <span class="badge bg-primary-100 text-primary-700">家人</span>
+                    <span class="badge bg-blue-100 text-blue-700 flex items-center gap-1">
+                      <span class="material-icons-round" style="font-size:10px">verified</span>已验证
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1 text-warm-500 text-xs">
+                    <span class="material-icons-round" style="font-size:13px">smartphone</span>
+                    138 **** 8888
+                  </div>
+                </div>
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">more_vert</span>
+                </div>
+              </div>
+              <!-- Status line -->
+              <div class="flex items-center gap-2 p-2.5 rounded-xl" style="background:#f0faf6">
+                <div class="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
+                  <span class="material-icons-round text-white" style="font-size:12px">check</span>
+                </div>
+                <span class="text-xs text-primary-700 font-medium">已关联 · 上次通知：从未触发</span>
+              </div>
+            </div>
+
+            <!-- Limit hint -->
+            <div class="flex items-start gap-2.5 p-3 rounded-2xl mb-4" style="background:#fff7ed;border:1px solid #fed7aa">
+              <span class="material-icons-round text-orange-400" style="font-size:18px;flex-shrink:0;margin-top:1px">info</span>
+              <p class="text-xs text-orange-700 leading-relaxed">当前版本最多支持 1 位紧急联系人，后续版本将扩展至 3 位</p>
+            </div>
+
+            <!-- How it works -->
+            <div class="card p-4">
+              <p class="font-bold text-slate-700 text-sm mb-3 flex items-center gap-2">
+                <span class="material-icons-round text-primary-500" style="font-size:18px">help_outline</span>
+                通知机制说明
+              </p>
+              <div class="flex flex-col gap-2.5">
+                <div class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white font-bold" style="font-size:10px">1</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">连续 <strong>2天</strong> 未签到时触发通知</p>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white font-bold" style="font-size:10px">2</span>
+                  </div>
+                  <p class="text-xs text-slate-600 leading-relaxed">优先发送 <strong>短信</strong>，失败则发 <strong>邮件</strong></p>
+                </div>
+                <div class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span class="text-white font-bold" style="font-size:10px">3</span>
+                  </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">每日 <strong>凌晨 1 点</strong> 系统自动检查</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Tab bar -->
+          <div class="tab-bar">
+            <div class="tab-item" onclick="showPage('home')">
+              <span class="material-icons-round" style="color:#b0ac98;font-size:24px">check_circle_outline</span>
+              <span style="color:#b0ac98;font-size:10px">签到</span>
+            </div>
+            <div class="tab-item" onclick="showPage('contacts')">
+              <span class="material-icons-round" style="color:#2ea078;font-size:24px">people_alt</span>
+              <span style="color:#2ea078;font-size:10px;font-weight:700">联系人</span>
+            </div>
+            <div class="tab-item" onclick="showPage('profile')">
+              <span class="material-icons-round" style="color:#b0ac98">account_circle</span>
+              <span style="color:#b0ac98;font-size:10px">我的</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== PROFILE PAGE ===================== -->
+        <div class="page" id="page-profile">
+          <div style="height:44px;flex-shrink:0"></div>
+          <!-- Guest banner -->
+          <div class="flex items-center gap-2 px-4 py-2" style="background:#fef3c7;flex-shrink:0">
+            <span class="material-icons-round text-amber-600" style="font-size:16px">visibility</span>
+            <span class="text-xs text-amber-800 font-medium flex-1">试用模式 · 数据仅供演示</span>
+            <button class="text-xs font-bold text-white bg-amber-400 px-3 py-1 rounded-lg">去登录</button>
+          </div>
+          <div class="scroll-content px-4 py-4 pb-28">
+            <!-- Avatar section -->
+            <div class="flex flex-col items-center mb-6 pt-2">
+              <div class="relative mb-3">
+                <div class="w-20 h-20 rounded-[28px] bg-primary-600 flex items-center justify-center shadow-xl" style="box-shadow:0 8px 24px rgba(30,132,97,0.3)">
+                  <span class="text-white font-black text-3xl">游</span>
+                </div>
+                <div class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white flex items-center justify-center" style="box-shadow:0 2px 8px rgba(0,0,0,0.15)">
+                  <span class="material-icons-round text-primary-600" style="font-size:16px">edit</span>
+                </div>
+              </div>
+              <p class="font-black text-xl text-slate-800 mb-0.5">体验用户</p>
+              <p class="text-warm-400 text-sm">未登录</p>
+            </div>
+
+            <!-- Info card -->
+            <div class="card p-1 mb-4">
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">smartphone</span>
+                </div>
+                <span class="text-sm text-slate-600 flex-1">手机号</span>
+                <span class="text-sm text-warm-400 font-medium">未登录</span>
+              </div>
+              <div style="height:1px;background:#f5f5f0;margin:0 16px"></div>
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">calendar_today</span>
+                </div>
+                <span class="text-sm text-slate-600 flex-1">注册时间</span>
+                <span class="text-sm text-warm-400 font-medium">试用中</span>
+              </div>
+              <div style="height:1px;background:#f5f5f0;margin:0 16px"></div>
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">verified_user</span>
+                </div>
+                <span class="text-sm text-slate-600 flex-1">账号状态</span>
+                <span class="badge bg-amber-100 text-amber-700">试用中</span>
+              </div>
+            </div>
+
+            <!-- Safety tip -->
+            <div class="p-4 rounded-2xl mb-4" style="background:linear-gradient(135deg, #f0faf6, #dcf4e9);border:1px solid #bbe8d5">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="material-icons-round text-primary-600" style="font-size:20px">shield</span>
+                <p class="font-bold text-primary-800 text-sm">安全守护</p>
+              </div>
+              <p class="text-xs text-primary-700 leading-relaxed">每日签到让紧急联系人放心。连续 2 天未签到，系统将自动发送提醒。</p>
+            </div>
+
+            <!-- Settings entry -->
+            <button class="w-full flex items-center gap-3 card px-4 py-3.5" onclick="showPage('settings')">
+              <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#f5f5f0">
+                <span class="material-icons-round" style="color:#8f8b76;font-size:18px">settings</span>
+              </div>
+              <span class="text-sm text-slate-700 flex-1 text-left">设置</span>
+              <span class="material-icons-round" style="color:#ccc9b8;font-size:20px">chevron_right</span>
+            </button>
+          </div>
+          <!-- Tab bar -->
+          <div class="tab-bar">
+            <div class="tab-item" onclick="showPage('home')">
+              <span class="material-icons-round" style="color:#b0ac98;font-size:24px">check_circle_outline</span>
+              <span style="color:#b0ac98;font-size:10px">签到</span>
+            </div>
+            <div class="tab-item" onclick="showPage('contacts')">
+              <span class="material-icons-round" style="color:#b0ac98;font-size:24px">people_alt</span>
+              <span style="color:#b0ac98;font-size:10px">联系人</span>
+            </div>
+            <div class="tab-item" onclick="showPage('profile')">
+              <span class="material-icons-round" style="color:#2ea078;font-size:24px">account_circle</span>
+              <span style="color:#2ea078;font-size:10px;font-weight:700">我的</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== SETTINGS PAGE ===================== -->
+        <div class="page" id="page-settings">
+          <div style="height:44px;flex-shrink:0"></div>
+          <div class="scroll-content px-4 py-4 pb-8">
+            <!-- Nav bar -->
+            <div class="flex items-center gap-3 mb-5">
+              <button class="w-9 h-9 rounded-xl bg-warm-100 flex items-center justify-center" onclick="showPage('profile')">
+                <span class="material-icons-round text-slate-600" style="font-size:20px">arrow_back</span>
+              </button>
+              <h2 class="text-xl font-black text-slate-800">设置</h2>
+            </div>
+
+            <!-- Account -->
+            <p class="text-xs font-bold text-warm-400 uppercase tracking-widest mb-2 px-1">账号</p>
+            <div class="card p-1 mb-5">
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">smartphone</span>
+                </div>
+                <span class="text-sm text-slate-600 flex-1">当前账号</span>
+                <span class="text-sm text-warm-400">未登录</span>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <p class="text-xs font-bold text-warm-400 uppercase tracking-widest mb-2 px-1">通知</p>
+            <div class="card p-1 mb-5">
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <span class="material-icons-round text-blue-500" style="font-size:18px">notifications</span>
+                </div>
+                <span class="text-sm text-slate-700 flex-1">推送通知</span>
+                <div class="toggle"></div>
+              </div>
+            </div>
+
+            <!-- About -->
+            <p class="text-xs font-bold text-warm-400 uppercase tracking-widest mb-2 px-1">关于</p>
+            <div class="card p-1 mb-5">
+              <div class="flex items-center gap-3 px-4 py-3.5 cursor-pointer">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">description</span>
+                </div>
+                <span class="text-sm text-slate-700 flex-1">用户协议</span>
+                <span class="material-icons-round" style="color:#ccc9b8;font-size:20px">chevron_right</span>
+              </div>
+              <div style="height:1px;background:#f5f5f0;margin:0 16px"></div>
+              <div class="flex items-center gap-3 px-4 py-3.5 cursor-pointer">
+                <div class="w-8 h-8 rounded-xl bg-warm-100 flex items-center justify-center">
+                  <span class="material-icons-round text-warm-500" style="font-size:18px">security</span>
+                </div>
+                <span class="text-sm text-slate-700 flex-1">隐私政策</span>
+                <span class="material-icons-round" style="color:#ccc9b8;font-size:20px">chevron_right</span>
+              </div>
+              <div style="height:1px;background:#f5f5f0;margin:0 16px"></div>
+              <div class="flex items-center gap-3 px-4 py-3.5">
+                <div class="w-8 h-8 rounded-xl bg-primary-50 flex items-center justify-center">
+                  <span class="material-icons-round text-primary-500" style="font-size:18px">info</span>
+                </div>
+                <span class="text-sm text-slate-700 flex-1">关于称平安</span>
+                <span class="text-xs text-warm-400 font-medium">v1.0.0</span>
+              </div>
+            </div>
+
+            <!-- Logout -->
+            <button class="w-full h-13 rounded-2xl flex items-center justify-center gap-2 py-3.5" style="border:1.5px solid #fecaca;background:#fff5f5">
+              <span class="material-icons-round text-red-400" style="font-size:20px">logout</span>
+              <span class="text-red-500 font-bold text-sm">退出登录</span>
+            </button>
+
+            <p class="text-center text-xs text-warm-300 mt-5">称平安 v1.0.0 · 让每一天都安心</p>
+          </div>
+        </div>
+
+      </div><!-- end phone-screen -->
+    </div><!-- end phone-frame -->
+  </div>
+
+  <!-- 设计说明 -->
+  <div class="max-w-2xl mx-auto mt-12 animate__animated animate__fadeIn">
+    <h3 class="text-center font-bold text-slate-600 mb-6 text-sm uppercase tracking-widest">设计系统变更对照</h3>
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div class="bg-red-50 rounded-2xl p-4 border border-red-100">
+        <p class="font-bold text-red-700 mb-3 flex items-center gap-2"><span class="material-icons-round" style="font-size:16px">close</span>原版问题</p>
+        <ul class="text-red-600 space-y-1.5 text-xs">
+          <li>• Emoji 图标（✅🔥📅🏆🛡️）</li>
+          <li>• 配色单一（全站 #10B981）</li>
+          <li>• 背景纯白，无层次感</li>
+          <li>• Tab 图标用文字符号</li>
+          <li>• 字体层级不足</li>
+          <li>• Shadow 过轻，整体"飘"</li>
+        </ul>
+      </div>
+      <div class="bg-primary-50 rounded-2xl p-4 border border-primary-100">
+        <p class="font-bold text-primary-700 mb-3 flex items-center gap-2"><span class="material-icons-round" style="font-size:16px">check</span>新版改进</p>
+        <ul class="text-primary-700 space-y-1.5 text-xs">
+          <li>• Material Icons Round 全套图标</li>
+          <li>• 多色系（主色/强调/中性）</li>
+          <li>• 暖白背景 + 渐变层次</li>
+          <li>• 统一 Tab Icon 规范</li>
+          <li>• 完整排版层级系统</li>
+          <li>• 彩色 Shadow + 质感卡片</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-100 mt-4">
+      <p class="font-bold text-amber-700 text-xs mb-2 flex items-center gap-2"><span class="material-icons-round" style="font-size:15px">build</span>落地到 RN 需要的改动</p>
+      <p class="text-xs text-amber-700">1. 安装 <code class="bg-amber-100 px-1 rounded">@expo/vector-icons</code>（已内置 Expo，可直接 import Ionicons / MaterialIcons）<br>2. 替换所有 Emoji 为 <code class="bg-amber-100 px-1 rounded">&lt;MaterialIcons name="..." /&gt;</code><br>3. 更新颜色常量文件，定义完整色阶<br>4. 调整 Shadow 参数（shadowColor 加入主题色）</p>
+    </div>
+  </div>
+
+  <script>
+    // 页面切换
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      // update top nav
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        if (b.getAttribute('onclick').includes("'" + name + "'")) b.classList.add('active');
+      });
+      // scroll phone to top
+      const screen = document.querySelector('.phone-screen');
+      if (screen) screen.scrollTop = 0;
+    }
+
+    // 生成日历
+    function buildCalendar() {
+      const grid = document.getElementById('cal-grid');
+      if (!grid) return;
+      const today = new Date(); today.setHours(0,0,0,0);
+      // checked dates: every 2 days for last 10
+      const checked = new Set();
+      for (let i = 1; i <= 20; i+=2) {
+        const d = new Date(today); d.setDate(d.getDate()-i);
+        checked.add(d.toISOString().slice(0,10));
+      }
+      const start = new Date(today); start.setDate(today.getDate()-34);
+      const dow = start.getDay(); start.setDate(start.getDate()-dow);
+      grid.innerHTML = '';
+      for (let i = 0; i < 35; i++) {
+        const d = new Date(start); d.setDate(start.getDate()+i);
+        const ds = d.toISOString().slice(0,10);
+        const isToday = d.getTime() === today.getTime();
+        const isFuture = d > today;
+        const isChecked = checked.has(ds);
+        const cell = document.createElement('div');
+        cell.className = 'flex justify-center';
+        let bg = '#f5f5f0', color = '#b0ac98';
+        if (isChecked) { bg = '#2ea078'; color = 'white'; }
+        else if (isToday) { bg = 'transparent'; color = '#2ea078'; }
+        const border = isToday ? '2px solid #2ea078' : 'none';
+        const opacity = isFuture ? '0.3' : '1';
+        cell.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:${isChecked||isToday?'700':'400'};border:${border};opacity:${opacity}">${d.getDate()}</div>`;
+        grid.appendChild(cell);
+      }
+    }
+    buildCalendar();
+  </script>
+</body>
+</html>

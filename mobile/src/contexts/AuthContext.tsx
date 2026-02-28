@@ -7,8 +7,10 @@ interface AuthContextValue {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isGuest: boolean;       // 试用模式（免登录）
   login: (phone: string, code: string) => Promise<void>;
   logout: () => Promise<void>;
+  enterGuestMode: () => void;
   refreshUser: (user: User) => void;
 }
 
@@ -18,6 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
   // 启动时从本地存储恢复登录态
   useEffect(() => {
@@ -43,12 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await storage.setUser(res.user);
     setToken(res.access_token);
     setUser(res.user);
+    setIsGuest(false);
   }, []);
 
   const logout = useCallback(async () => {
     await storage.clearAuth();
     setToken(null);
     setUser(null);
+    setIsGuest(false);
+  }, []);
+
+  const enterGuestMode = useCallback(() => {
+    setIsGuest(true);
   }, []);
 
   const refreshUser = useCallback((updatedUser: User) => {
@@ -63,8 +72,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         isLoading,
         isAuthenticated: !!token,
+        isGuest,
         login,
         logout,
+        enterGuestMode,
         refreshUser,
       }}
     >

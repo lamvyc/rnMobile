@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Animated,
@@ -12,7 +12,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { checkinApi, CheckinRecord } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import CheckinCalendar from '../components/CheckinCalendar';
+import GuestBanner from '../components/GuestBanner';
+
+// 试用模式 mock 数据
+const MOCK_STATUS = { checkedInToday: false, consecutiveDays: 3, totalDays: 12, monthlyDays: 8 };
+const MOCK_HISTORY: CheckinRecord[] = Array.from({ length: 10 }, (_, i) => {
+  const d = new Date();
+  d.setDate(d.getDate() - i * 2 - 1);
+  const dateStr = d.toISOString().slice(0, 10);
+  return { id: String(i), checkinDate: dateStr, checkinTime: d.toISOString() };
+});
 
 interface CheckinStatus {
   checkedInToday: boolean;
@@ -22,16 +33,92 @@ interface CheckinStatus {
 }
 
 export default function HomeScreen() {
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
+  const { colors } = useTheme();
   const [status, setStatus] = useState<CheckinStatus | null>(null);
   const [history, setHistory] = useState<CheckinRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [checking, setChecking] = useState(false);
 
-  // 签到按钮动画
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        safe: { flex: 1, backgroundColor: colors.bg },
+        scroll: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24, gap: 20 },
+
+        topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+        greeting: { fontSize: 22, fontWeight: '700', color: colors.textPri },
+        date: { fontSize: 13, color: colors.textSec, marginTop: 2 },
+        shieldBadge: {
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: colors.primaryLight,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        shieldIcon: { fontSize: 22 },
+
+        checkinSection: { alignItems: 'center', paddingVertical: 10 },
+        checkinBtn: {
+          width: 180,
+          height: 180,
+          borderRadius: 90,
+          backgroundColor: colors.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+          shadowColor: colors.primary,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.4,
+          shadowRadius: 18,
+          elevation: 8,
+        },
+        checkinBtnDone: {
+          backgroundColor: colors.primaryLight,
+          shadowOpacity: 0.1,
+        },
+        checkinEmoji: { fontSize: 48, marginBottom: 8 },
+        checkinLabel: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+        checkinLabelDone: { color: colors.primary },
+        checkinSub: { fontSize: 12, color: colors.textSec, marginTop: 4 },
+
+        statsRow: { flexDirection: 'row', gap: 12 },
+        statCard: {
+          flex: 1,
+          backgroundColor: colors.card,
+          borderRadius: 16,
+          padding: 14,
+          alignItems: 'center',
+          borderTopWidth: 3,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.06,
+          shadowRadius: 4,
+          elevation: 2,
+        },
+        statIcon: { fontSize: 22, marginBottom: 6 },
+        statValue: { fontSize: 24, fontWeight: '800' },
+        statUnit: { fontSize: 11, color: colors.textSec, marginTop: -2 },
+        statLabel: { fontSize: 12, color: colors.textTer, marginTop: 4 },
+
+        statusBanner: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 10,
+          borderRadius: 14,
+          padding: 14,
+        },
+        bannerSafe: { backgroundColor: colors.primaryLight },
+        bannerWarn: { backgroundColor: '#FEF3C7' },
+        bannerIcon: { fontSize: 18 },
+        bannerText: { flex: 1, fontSize: 13, color: colors.textSec, lineHeight: 20 },
+      }),
+    [colors],
+  );
 
   // 未签到时持续脉冲
   useEffect(() => {
@@ -49,6 +136,13 @@ export default function HomeScreen() {
   }, [status?.checkedInToday]);
 
   const fetchData = useCallback(async () => {
+    if (isGuest) {
+      setStatus(MOCK_STATUS);
+      setHistory(MOCK_HISTORY);
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
     try {
       const [s, h] = await Promise.all([
         checkinApi.getStatus(),
@@ -62,7 +156,7 @@ export default function HomeScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [isGuest]);
 
   useEffect(() => {
     fetchData();
@@ -70,18 +164,23 @@ export default function HomeScreen() {
 
   const handleCheckin = async () => {
     if (status?.checkedInToday || checking) return;
+    if (isGuest) {
+      Animated.sequence([
+        Animated.timing(scaleAnim, { toValue: 0.9, duration: 100, useNativeDriver: true }),
+        Animated.spring(scaleAnim, { toValue: 1, friction: 4, useNativeDriver: true }),
+      ]).start();
+      setStatus((prev) => prev ? { ...prev, checkedInToday: true, consecutiveDays: prev.consecutiveDays + 1 } : prev);
+      Alert.alert('试用签到成功 🎉', '（试用模式，数据不会保存）\n登录后才能正式签到哦！');
+      return;
+    }
     setChecking(true);
-
-    // 按钮缩放动画
     Animated.sequence([
       Animated.timing(scaleAnim, { toValue: 0.9, duration: 100, useNativeDriver: true }),
       Animated.spring(scaleAnim, { toValue: 1, friction: 4, useNativeDriver: true }),
     ]).start();
-
     try {
       const res = await checkinApi.doCheckin();
       setStatus((prev) => prev ? { ...prev, checkedInToday: true, consecutiveDays: res.consecutiveDays, totalDays: res.totalDays } : prev);
-      // 添加到历史记录
       const today = new Date().toISOString().slice(0, 10);
       setHistory((prev) => [{ id: Date.now().toString(), checkinDate: today, checkinTime: new Date().toISOString() }, ...prev]);
       Alert.alert('签到成功 🎉', `连续签到 ${res.consecutiveDays} 天，继续保持！`);
@@ -100,13 +199,13 @@ export default function HomeScreen() {
     return '晚上好';
   };
 
-  const displayName = user?.nickname || user?.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') || '朋友';
+  const displayName = isGuest ? '体验用户' : (user?.nickname || user?.phone?.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') || '朋友');
 
   if (loading) {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: '#6B7280' }}>加载中...</Text>
+          <Text style={{ color: colors.textSec }}>加载中...</Text>
         </View>
       </SafeAreaView>
     );
@@ -114,9 +213,10 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      {isGuest && <GuestBanner />}
       <ScrollView
         contentContainerStyle={styles.scroll}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchData(); }} tintColor="#10B981" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchData(); }} tintColor={colors.primary} />}
         showsVerticalScrollIndicator={false}
       >
         {/* 顶部问候 */}
@@ -142,7 +242,7 @@ export default function HomeScreen() {
               <Text style={styles.checkinEmoji}>
                 {status?.checkedInToday ? '✅' : '👋'}
               </Text>
-              <Text style={styles.checkinLabel}>
+              <Text style={[styles.checkinLabel, status?.checkedInToday && styles.checkinLabelDone]}>
                 {checking ? '签到中...' : status?.checkedInToday ? '今日已签到' : '点击签到'}
               </Text>
               {status?.checkedInToday && (
@@ -154,9 +254,9 @@ export default function HomeScreen() {
 
         {/* 统计卡片 */}
         <View style={styles.statsRow}>
-          <StatCard icon="🔥" value={status?.consecutiveDays ?? 0} label="连续签到" unit="天" color="#F59E0B" />
-          <StatCard icon="📅" value={status?.monthlyDays ?? 0} label="本月签到" unit="天" color="#3B82F6" />
-          <StatCard icon="🏆" value={status?.totalDays ?? 0} label="累计签到" unit="天" color="#10B981" />
+          <StatCard icon="🔥" value={status?.consecutiveDays ?? 0} label="连续签到" unit="天" color="#F59E0B" styles={styles} />
+          <StatCard icon="📅" value={status?.monthlyDays ?? 0} label="本月签到" unit="天" color="#3B82F6" styles={styles} />
+          <StatCard icon="🏆" value={status?.totalDays ?? 0} label="累计签到" unit="天" color={colors.primary} styles={styles} />
         </View>
 
         {/* 安全状态横幅 */}
@@ -178,7 +278,21 @@ export default function HomeScreen() {
   );
 }
 
-function StatCard({ icon, value, label, unit, color }: { icon: string; value: number; label: string; unit: string; color: string }) {
+function StatCard({
+  icon,
+  value,
+  label,
+  unit,
+  color,
+  styles,
+}: {
+  icon: string;
+  value: number;
+  label: string;
+  unit: string;
+  color: string;
+  styles: ReturnType<typeof StyleSheet.create>;
+}) {
   return (
     <View style={[styles.statCard, { borderTopColor: color }]}>
       <Text style={styles.statIcon}>{icon}</Text>
@@ -188,74 +302,3 @@ function StatCard({ icon, value, label, unit, color }: { icon: string; value: nu
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F0FDF4' },
-  scroll: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24, gap: 20 },
-
-  topBar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  greeting: { fontSize: 22, fontWeight: '700', color: '#065F46' },
-  date: { fontSize: 13, color: '#6B7280', marginTop: 2 },
-  shieldBadge: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#D1FAE5',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  shieldIcon: { fontSize: 22 },
-
-  checkinSection: { alignItems: 'center', paddingVertical: 10 },
-  checkinBtn: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: '#10B981',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  checkinBtnDone: {
-    backgroundColor: '#6EE7B7',
-    shadowOpacity: 0.15,
-  },
-  checkinEmoji: { fontSize: 48, marginBottom: 8 },
-  checkinLabel: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
-  checkinSub: { fontSize: 12, color: '#A7F3D0', marginTop: 4 },
-
-  statsRow: { flexDirection: 'row', gap: 12 },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 14,
-    alignItems: 'center',
-    borderTopWidth: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  statIcon: { fontSize: 22, marginBottom: 6 },
-  statValue: { fontSize: 24, fontWeight: '800' },
-  statUnit: { fontSize: 11, color: '#6B7280', marginTop: -2 },
-  statLabel: { fontSize: 12, color: '#9CA3AF', marginTop: 4 },
-
-  statusBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    borderRadius: 14,
-    padding: 14,
-  },
-  bannerSafe: { backgroundColor: '#D1FAE5' },
-  bannerWarn: { backgroundColor: '#FEF3C7' },
-  bannerIcon: { fontSize: 18 },
-  bannerText: { flex: 1, fontSize: 13, color: '#374151', lineHeight: 20 },
-});

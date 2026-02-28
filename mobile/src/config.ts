@@ -1,6 +1,8 @@
 // API 配置
-// 开发环境：本机 IP 地址（模拟器使用 localhost，真机需改为本机局域网 IP）
-const DEV_API_URL = 'http://localhost:3000';
+// 模拟器调试：使用 localhost
+// const DEV_API_URL = 'http://localhost:5210';
+// 真机调试：使用 Mac 局域网 IP（运行 `ipconfig getifaddr en0` 获取）
+const DEV_API_URL = 'http://172.18.85.201:5210';
 const PROD_API_URL = 'https://your-production-domain.com'; // 上线前替换
 
 export const API_BASE_URL = __DEV__ ? DEV_API_URL : PROD_API_URL;

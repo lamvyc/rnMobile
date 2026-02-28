@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>称平安 · 三主题设计</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap">
+<style>
+* { font-family:'Noto Sans SC',sans-serif; box-sizing:border-box; }
+
+/* ── 三主题色板 ── */
+:root {
+  --acc: #7A6F9B;
+  --acc-l: #9D8BC7;
+  --acc-ll: #B5A6E0;
+}
+
+/* ── 手机外壳 ── */
+.phone {
+  width:300px; height:650px; border-radius:40px; overflow:hidden;
+  box-shadow:0 0 0 8px #1c1c1e, 0 0 0 10px #2c2c2e, 0 28px 60px rgba(0,0,0,0.4);
+  position:relative; flex-shrink:0;
+}
+.screen { width:100%; height:100%; overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; }
+.screen::-webkit-scrollbar { display:none; }
+
+/* ── 通用组件 ── */
+.tab-bar {
+  position:absolute; bottom:0; left:0; right:0; height:68px;
+  display:flex; align-items:flex-start; padding-top:8px;
+  border-top:1px solid var(--tab-border);
+  background:var(--tab-bg);
+  backdrop-filter:blur(20px);
+}
+.tab-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; }
+.tab-item span:last-child { font-size:9px; font-weight:600; }
+
+.checkin-circle {
+  width:150px; height:150px; border-radius:75px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  cursor:pointer; position:relative;
+}
+.stat-card { border-radius:14px; padding:12px; text-align:center; flex:1; }
+
+/* ── 明亮主题（薰衣草） ── */
+.light { --bg:#F7F6FA; --bg2:#EEEAF5; --card:#FFFFFF; --card2:#F3F0FA;
+  --text:#262332; --text2:#6F6A82; --text3:#A09AB8;
+  --border:rgba(122,111,155,0.12); --tab-bg:rgba(255,255,255,0.96);
+  --tab-border:rgba(0,0,0,0.06); --shadow:0 2px 16px rgba(122,111,155,0.1); }
+.light .screen { background:var(--bg); }
+.light .card-el { background:var(--card); box-shadow:var(--shadow); border-radius:18px; }
+.light .glass { background:var(--card); box-shadow:var(--shadow); border:1px solid var(--border); border-radius:16px; }
+.light .checkin-circle { background:linear-gradient(145deg,#9D8BC7,#6B5C8E); box-shadow:0 12px 36px rgba(122,111,155,0.32); }
+.light .badge-streak { background:rgba(214,168,184,0.16); border:1px solid rgba(214,168,184,0.32); }
+.light .banner-warn { background:#FDF5F8; border:1px solid rgba(214,168,184,0.38); }
+.light .field { background:#F2F0F8; border:1.5px solid #E0DBF0; border-radius:12px; height:48px; padding:0 14px; display:flex; align-items:center; gap:10px; }
+.light .field-active { border-color:#7A6F9B; background:#EDE9F8; }
+.light .btn-main { background:linear-gradient(135deg,#7A6F9B,#5E5480); box-shadow:0 8px 24px rgba(122,111,155,0.3); border-radius:16px; color:white; font-weight:800; height:50px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.light .btn-ghost { background:#F0EDF8; border:1.5px solid #DDD8F0; border-radius:14px; color:#7A6F9B; font-weight:600; height:46px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.light .divider { background:rgba(0,0,0,0.06); }
+.light .section-title { color:#8A86A0; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; }
+.light .row-item { display:flex; align-items:center; gap:12px; padding:14px 16px; }
+.light .row-sep { height:1px; background:#EDE9F5; margin:0 16px; }
+.light .icon-box { width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:#F0EDF8; }
+.light .toggle-on { width:40px; height:24px; border-radius:12px; background:linear-gradient(135deg,#7A6F9B,#5E5480); position:relative; }
+.light .toggle-on::after { content:''; position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+.light .logout-btn { border:1.5px solid #FECACA; background:#FFF5F5; border-radius:14px; display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; }
+
+/* ── 深色主题（暗紫） ── */
+.deep { --bg:#1B1825; --bg2:#231F32; --card:rgba(255,255,255,0.05); --card2:rgba(255,255,255,0.03);
+  --text:#F5F3FA; --text2:#B9B4C9; --text3:rgba(185,180,201,0.55);
+  --border:rgba(255,255,255,0.09); --tab-bg:rgba(27,24,37,0.96);
+  --tab-border:rgba(255,255,255,0.07); }
+.deep .screen { background:var(--bg); }
+.deep .glass { background:var(--card); border:1px solid var(--border); border-radius:16px; backdrop-filter:blur(20px); }
+.deep .checkin-circle { background:linear-gradient(145deg,#2C2448,#18142A); border:2px solid rgba(157,139,199,0.28); box-shadow:0 12px 40px rgba(0,0,0,0.45), 0 0 0 12px rgba(157,139,199,0.04); }
+.deep .badge-streak { background:rgba(227,183,200,0.1); border:1px solid rgba(227,183,200,0.22); }
+.deep .banner-warn { background:rgba(227,183,200,0.07); border:1px solid rgba(227,183,200,0.14); }
+.deep .field { background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.09); border-radius:12px; height:48px; padding:0 14px; display:flex; align-items:center; gap:10px; }
+.deep .field-active { border-color:rgba(157,139,199,0.45); background:rgba(157,139,199,0.08); }
+.deep .btn-main { background:linear-gradient(135deg,#9D8BC7,#7060A8); box-shadow:0 8px 28px rgba(157,139,199,0.3); border-radius:16px; color:white; font-weight:800; height:50px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.deep .btn-ghost { background:rgba(157,139,199,0.08); border:1.5px solid rgba(157,139,199,0.22); border-radius:14px; color:#9D8BC7; font-weight:600; height:46px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.deep .divider { background:rgba(255,255,255,0.07); }
+.deep .section-title { color:rgba(185,180,201,0.45); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; }
+.deep .row-item { display:flex; align-items:center; gap:12px; padding:13px 16px; }
+.deep .row-sep { height:1px; background:rgba(255,255,255,0.05); margin:0 16px; }
+.deep .icon-box { width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(157,139,199,0.1); }
+.deep .toggle-on { width:40px; height:24px; border-radius:12px; background:linear-gradient(135deg,#9D8BC7,#7060A8); position:relative; }
+.deep .toggle-on::after { content:''; position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+.deep .logout-btn { border:1px solid rgba(239,68,68,0.18); background:rgba(239,68,68,0.05); border-radius:14px; display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; }
+
+/* ── 极夜主题（紫夜） ── */
+.night { --bg:#100E18; --bg2:#16122A; --card:rgba(255,255,255,0.04); --card2:rgba(255,255,255,0.02);
+  --text:#FFFFFF; --text2:#CEC9DE; --text3:rgba(206,201,222,0.5);
+  --border:rgba(255,255,255,0.07); --tab-bg:rgba(16,14,24,0.98);
+  --tab-border:rgba(255,255,255,0.05); }
+.night .screen { background:var(--bg); }
+.night .glass { background:var(--card); border:1px solid var(--border); border-radius:16px; }
+.night .checkin-circle { background:linear-gradient(145deg,#1A1530,#0D0A1A); border:1.5px solid rgba(181,166,224,0.28); box-shadow:0 0 0 16px rgba(181,166,224,0.025), 0 12px 40px rgba(0,0,0,0.65); }
+.night .badge-streak { background:rgba(239,197,212,0.09); border:1px solid rgba(239,197,212,0.18); }
+.night .banner-warn { background:rgba(239,197,212,0.05); border:1px solid rgba(239,197,212,0.1); }
+.night .field { background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.07); border-radius:12px; height:48px; padding:0 14px; display:flex; align-items:center; gap:10px; }
+.night .field-active { border-color:rgba(181,166,224,0.38); background:rgba(181,166,224,0.06); }
+.night .btn-main { background:linear-gradient(135deg,#B5A6E0,#8070C0); box-shadow:0 8px 28px rgba(181,166,224,0.22), 0 0 0 1px rgba(181,166,224,0.15); border-radius:16px; color:white; font-weight:800; height:50px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.night .btn-ghost { background:rgba(181,166,224,0.06); border:1.5px solid rgba(181,166,224,0.18); border-radius:14px; color:#B5A6E0; font-weight:600; height:46px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.night .divider { background:rgba(255,255,255,0.05); }
+.night .section-title { color:rgba(206,201,222,0.35); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; }
+.night .row-item { display:flex; align-items:center; gap:12px; padding:13px 16px; }
+.night .row-sep { height:1px; background:rgba(255,255,255,0.04); margin:0 16px; }
+.night .icon-box { width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(181,166,224,0.08); }
+.night .toggle-on { width:40px; height:24px; border-radius:12px; background:linear-gradient(135deg,#B5A6E0,#8070C0); position:relative; box-shadow:0 0 12px rgba(181,166,224,0.25); }
+.night .toggle-on::after { content:''; position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.4); }
+.night .logout-btn { border:1px solid rgba(239,68,68,0.14); background:rgba(239,68,68,0.04); border-radius:14px; display:flex; align-items:center; justify-content:center; gap:8px; padding:14px; }
+
+/* 页面切换 */
+.page { display:none; width:100%; min-height:calc(100% - 44px); padding-bottom:70px; }
+.page.active { display:block; }
+
+/* 顶部导航选择器 */
+.page-nav { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+.pnav { padding:7px 16px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; border:1.5px solid rgba(122,111,155,0.35); color:rgba(122,111,155,0.8); background:transparent; transition:all .2s; }
+.pnav.on { background:linear-gradient(135deg,#7A6F9B,#5E5480); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(122,111,155,0.3); }
+
+/* 连续签到脉冲 */
+@keyframes pulse-ring { 0%{transform:scale(.9);opacity:.8} 100%{transform:scale(1.1);opacity:0} }
+.pulse::after { content:''; position:absolute; inset:-10px; border-radius:50%; border:2px solid rgba(122,111,155,0.35); animation:pulse-ring 2s ease-out infinite; }
+.pulse::before { content:''; position:absolute; inset:-20px; border-radius:50%; border:1px solid rgba(122,111,155,0.15); animation:pulse-ring 2s ease-out .5s infinite; }
+@keyframes flame { 0%,100%{transform:scaleY(1) rotate(-2deg)} 50%{transform:scaleY(1.06) rotate(2deg)} }
+.flame { animation:flame 1.6s ease-in-out infinite; display:inline-block; }
+</style>
+</head>
+
+<body style="background:#0a0c12;min-height:100vh;padding:32px 16px 60px">
+
+<!-- Header -->
+<div style="text-align:center;margin-bottom:24px">
+  <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:8px">
+    <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#7A6F9B,#5E5480);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(122,111,155,0.45)">
+      <span class="material-icons-round" style="color:white;font-size:20px">shield</span>
+    </div>
+    <h1 style="font-size:22px;font-weight:900;background:linear-gradient(135deg,#B5A6E0,#7A6F9B);-webkit-background-clip:text;-webkit-text-fill-color:transparent">称平安 · 三主题设计</h1>
+  </div>
+  <p style="color:rgba(255,255,255,0.35);font-size:13px">明亮 #7A6F9B · 深色 #9D8BC7 · 极夜 #B5A6E0 · 薰衣草暖色系</p>
+</div>
+
+<!-- 页面切换 -->
+<div class="page-nav" style="margin-bottom:28px">
+  <button class="pnav on" onclick="switchPage('login')">登录</button>
+  <button class="pnav" onclick="switchPage('home')">签到主页</button>
+  <button class="pnav" onclick="switchPage('contacts')">联系人</button>
+  <button class="pnav" onclick="switchPage('profile')">个人中心</button>
+  <button class="pnav" onclick="switchPage('settings')">设置</button>
+</div>
+
+<!-- 三手机 -->
+<div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap">
+
+  <!-- ──────── 明亮 ──────── -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">☀️ 明亮</span>
+    <div class="phone light">
+      <div class="screen" id="screen-light">
+        <div style="height:36px;flex-shrink:0"></div>
+        <div id="light-content"></div>
+      </div>
+      <div class="tab-bar" id="tab-light">
+        <div class="tab-item"><span class="material-icons-round" style="color:#7A6F9B;font-size:21px">check_circle</span><span style="color:#7A6F9B">签到</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#A09AB8">people_alt</span><span style="color:#A09AB8">联系人</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#A09AB8">account_circle</span><span style="color:#A09AB8">我的</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="width:12px;height:12px;border-radius:50%;background:#F7F6FA;border:1px solid #ccc"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#7A6F9B"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#D6A8B8"></div>
+      <span style="color:rgba(255,255,255,0.3);font-size:11px;margin-left:4px">薰衣草 · 温柔</span>
+    </div>
+  </div>
+
+  <!-- ──────── 深邃 ──────── -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">� 深色</span>
+    <div class="phone deep">
+      <div class="screen" id="screen-deep">
+        <div style="height:36px;flex-shrink:0"></div>
+        <div id="deep-content"></div>
+      </div>
+      <div class="tab-bar" id="tab-deep">
+        <div class="tab-item"><span class="material-icons-round" style="color:#9D8BC7;font-size:21px">check_circle</span><span style="color:#9D8BC7">签到</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#B9B4C9">people_alt</span><span style="color:#B9B4C9">联系人</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#B9B4C9">account_circle</span><span style="color:#B9B4C9">我的</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="width:12px;height:12px;border-radius:50%;background:#1B1825;border:1px solid #444"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#9D8BC7"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#E3B7C8"></div>
+      <span style="color:rgba(255,255,255,0.3);font-size:11px;margin-left:4px">暗紫 · 沉静</span>
+    </div>
+  </div>
+
+  <!-- ──────── 极夜 ──────── -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <span style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase">🌑 极夜</span>
+    <div class="phone night">
+      <div class="screen" id="screen-night">
+        <div style="height:36px;flex-shrink:0"></div>
+        <div id="night-content"></div>
+      </div>
+      <div class="tab-bar" id="tab-night">
+        <div class="tab-item"><span class="material-icons-round" style="color:#B5A6E0;font-size:21px">check_circle</span><span style="color:#B5A6E0">签到</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#CEC9DE">people_alt</span><span style="color:#CEC9DE">联系人</span></div>
+        <div class="tab-item"><span class="material-icons-round" style="color:#CEC9DE">account_circle</span><span style="color:#CEC9DE">我的</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:5px;align-items:center">
+      <div style="width:12px;height:12px;border-radius:50%;background:#100E18;border:1px solid #333"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#B5A6E0"></div>
+      <div style="width:12px;height:12px;border-radius:50%;background:#EFC5D4"></div>
+      <span style="color:rgba(255,255,255,0.3);font-size:11px;margin-left:4px">紫夜 · 极夜</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 设计系统说明 -->
+<div style="max-width:700px;margin:40px auto 0;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:22px">
+  <p style="color:rgba(255,255,255,0.7);font-weight:700;font-size:13px;margin-bottom:16px;text-align:center">薰衣草紫系 · 温柔 · 不工具化</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:11px">
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px">
+      <p style="color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:8px">☀️ 明亮</p>
+      <div style="display:flex;flex-direction:column;gap:4px;color:rgba(255,255,255,0.35)">
+        <span>背景 #F7F6FA</span><span>卡片 #FFFFFF</span><span>主色 #7A6F9B</span><span>辅助 #D6A8B8</span><span>文字 #262332</span>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px">
+      <p style="color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:8px">🌊 深色</p>
+      <div style="display:flex;flex-direction:column;gap:4px;color:rgba(255,255,255,0.35)">
+        <span>背景 #1B1825</span><span>卡片 glass 5%</span><span>主色 #9D8BC7</span><span>辅助 #E3B7C8</span><span>文字 #F5F3FA</span>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px">
+      <p style="color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:8px">🌑 极夜</p>
+      <div style="display:flex;flex-direction:column;gap:4px;color:rgba(255,255,255,0.35)">
+        <span>背景 #100E18</span><span>卡片 glass 4%</span><span>主色 #B5A6E0</span><span>辅助 #EFC5D4</span><span>文字 #FFFFFF</span>
+      </div>
+    </div>
+  </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px">
+      <p style="color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:8px">� 深色</p>
+      <div style="display:flex;flex-direction:column;gap:4px;color:rgba(255,255,255,0.35)">
+        <span>背景 #1C2320</span><span>卡片 glass 5%</span><span>主色 #7FAE98</span><span>辅助 #F1B48C</span><span>文字 #F2F5F3</span>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px">
+      <p style="color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:8px">🌑 极夜</p>
+      <div style="display:flex;flex-direction:column;gap:4px;color:rgba(255,255,255,0.35)">
+        <span>背景 #0E1410</span><span>卡片 glass 4%</span><span>主色 #95C0AA</span><span>辅助 #F5C29A</span><span>文字 #FFFFFF</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding:12px;background:rgba(122,111,155,0.07);border:1px solid rgba(122,111,155,0.18);border-radius:12px;font-size:11px;color:rgba(255,255,255,0.45)">
+    <strong style="color:rgba(181,166,224,0.9)">落地到 RN：</strong>用 ThemeContext 管理主题，切换时替换 StyleSheet 色值；深色/极夜毛玻璃用 <code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:4px">expo-blur</code>；渐变用 <code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:4px">expo-linear-gradient</code>
+  </div>
+</div>
+
+<script>
+// ─── 页面模板生成器 ───
+function buildPage(theme, page) {
+  const T = {
+    light: {
+      acc:'#7A6F9B', accLight:'#F0EDF8', accText:'#7A6F9B',
+      textPri:'#262332', textSec:'#6F6A82', textTer:'#A09AB8',
+      bg:'#F7F6FA', card:'#FFFFFF', border:'rgba(122,111,155,0.12)',
+      iconBg:'#F0EDF8', iconColor:'#7A6F9B', streakColor:'#D6A8B8',
+      streakBg:'rgba(214,168,184,0.16)', streakBorder:'rgba(214,168,184,0.32)',
+      warnBg:'#FDF5F8', warnBorder:'rgba(214,168,184,0.38)', warnText:'#6B3A4A', warnIcon:'#D6A8B8',
+      divider:'rgba(0,0,0,0.06)', sepColor:'#EDE9F5',
+      shadow:'0 2px 16px rgba(122,111,155,0.1)', guestBg:'rgba(214,168,184,0.1)',
+      guestBorder:'rgba(214,168,184,0.28)', guestText:'#6B3A4A', guestBtn:'#C08A9A',
+    },
+    deep: {
+      acc:'#9D8BC7', accLight:'rgba(157,139,199,0.1)', accText:'#9D8BC7',
+      textPri:'#F5F3FA', textSec:'#B9B4C9', textTer:'rgba(185,180,201,0.55)',
+      bg:'#1B1825', card:'rgba(255,255,255,0.05)', border:'rgba(255,255,255,0.09)',
+      iconBg:'rgba(157,139,199,0.1)', iconColor:'#9D8BC7', streakColor:'#E3B7C8',
+      streakBg:'rgba(227,183,200,0.1)', streakBorder:'rgba(227,183,200,0.22)',
+      warnBg:'rgba(227,183,200,0.07)', warnBorder:'rgba(227,183,200,0.14)', warnText:'#B9B4C9', warnIcon:'#E3B7C8',
+      divider:'rgba(255,255,255,0.07)', sepColor:'rgba(255,255,255,0.05)',
+      shadow:'none', guestBg:'rgba(227,183,200,0.08)',
+      guestBorder:'rgba(227,183,200,0.18)', guestText:'#E3B7C8', guestBtn:'#B87090',
+    },
+    night: {
+      acc:'#B5A6E0', accLight:'rgba(181,166,224,0.08)', accText:'#B5A6E0',
+      textPri:'#FFFFFF', textSec:'#CEC9DE', textTer:'rgba(206,201,222,0.5)',
+      bg:'#100E18', card:'rgba(255,255,255,0.04)', border:'rgba(255,255,255,0.07)',
+      iconBg:'rgba(181,166,224,0.08)', iconColor:'#B5A6E0', streakColor:'#EFC5D4',
+      streakBg:'rgba(239,197,212,0.09)', streakBorder:'rgba(239,197,212,0.18)',
+      warnBg:'rgba(239,197,212,0.05)', warnBorder:'rgba(239,197,212,0.1)', warnText:'#CEC9DE', warnIcon:'#EFC5D4',
+      divider:'rgba(255,255,255,0.05)', sepColor:'rgba(255,255,255,0.04)',
+      shadow:'none', guestBg:'rgba(239,197,212,0.06)',
+      guestBorder:'rgba(239,197,212,0.12)', guestText:'#EFC5D4', guestBtn:'#A85060',
+    }
+  }[theme];
+
+  const accGrad = theme==='light'
+    ? 'linear-gradient(135deg,#7A6F9B,#5E5480)'
+    : theme==='deep'
+    ? 'linear-gradient(135deg,#9D8BC7,#7060A8)'
+    : 'linear-gradient(135deg,#B5A6E0,#8070C0)';
+
+  const px = 'padding:0 16px';
+
+  if (page === 'login') return `
+    <div style="${px};padding-top:16px;padding-bottom:24px">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:28px;padding-top:8px">
+        <div style="width:64px;height:64px;border-radius:22px;background:${accGrad};box-shadow:0 12px 30px rgba(74,123,255,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+          <span class="material-icons-round" style="color:white;font-size:32px">shield</span>
+        </div>
+        <p style="font-size:26px;font-weight:900;color:${T.textPri};letter-spacing:2px;margin-bottom:3px">称平安</p>
+        <p style="font-size:12px;color:${T.textSec}">每日签到，守护平安</p>
+      </div>
+      <div style="background:${T.card};border-radius:18px;padding:18px;margin-bottom:10px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <p style="color:${T.textPri};font-weight:700;font-size:14px;margin-bottom:14px">手机号登录</p>
+        <div style="margin-bottom:10px">
+          <p style="color:${T.textTer};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">手机号</p>
+          <div class="${theme} field field-active">
+            <span class="material-icons-round" style="color:${T.acc};font-size:17px">smartphone</span>
+            <span style="color:${T.textTer};font-size:13px">请输入手机号</span>
+          </div>
+        </div>
+        <div style="margin-bottom:14px">
+          <p style="color:${T.textTer};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">验证码</p>
+          <div style="display:flex;gap:7px">
+            <div class="${theme} field" style="flex:1">
+              <span class="material-icons-round" style="color:${T.textTer};font-size:17px">lock_outline</span>
+              <span style="color:${T.textTer};font-size:13px">6位验证码</span>
+            </div>
+            <button style="height:48px;padding:0 12px;border-radius:12px;background:${T.accLight};border:1.5px solid ${theme==='light'?'#D0DCFF':T.border};color:${T.acc};font-size:11px;font-weight:700;white-space:nowrap">获取验证码</button>
+          </div>
+        </div>
+        <div class="${theme} btn-main" style="font-size:14px;gap:6px;cursor:pointer">
+          <span class="material-icons-round" style="font-size:16px">arrow_forward</span>登录 / 注册
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="flex:1;height:1px;background:${T.divider}"></div>
+        <span style="color:${T.textTer};font-size:11px">或者</span>
+        <div style="flex:1;height:1px;background:${T.divider}"></div>
+      </div>
+      <div class="${theme} btn-ghost" style="cursor:pointer;font-size:13px">
+        <span class="material-icons-round" style="font-size:15px">visibility</span>免登录试用
+      </div>
+      <p style="text-align:center;color:${T.textTer};font-size:10px;margin-top:14px">登录即代表同意《用户协议》和《隐私政策》</p>
+    </div>`;
+
+  if (page === 'home') return `
+    <div style="background:${T.guestBg};border-bottom:1px solid ${T.guestBorder};padding:6px 16px;display:flex;align-items:center;gap:7px">
+      <span class="material-icons-round" style="color:${T.guestText};font-size:13px">visibility</span>
+      <span style="color:${T.guestText};font-size:11px;font-weight:600;flex:1">试用模式</span>
+      <button style="font-size:10px;font-weight:700;color:white;background:${T.guestBtn};padding:3px 9px;border-radius:7px">去登录</button>
+    </div>
+    <div style="${px};padding-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div>
+          <p style="color:${T.textSec};font-size:10px;font-weight:500;margin-bottom:1px">下午好</p>
+          <p style="color:${T.textPri};font-size:18px;font-weight:900">体验用户</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="display:flex;align-items:center;gap:4px;background:${T.streakBg};border:1px solid ${T.streakBorder};border-radius:18px;padding:4px 9px">
+            <span class="flame" style="font-size:13px">🔥</span>
+            <span style="color:${T.streakColor};font-size:12px;font-weight:800">3</span>
+          </div>
+          <div style="width:32px;height:32px;border-radius:12px;background:${T.card};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.textSec};font-size:16px">person</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;padding:6px 0 20px">
+        <div style="position:relative;padding:20px">
+          <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,${theme==='light'?'rgba(122,111,155,0.08)':theme==='deep'?'rgba(157,139,199,0.08)':'rgba(181,166,224,0.06)'} 0%,transparent 70%)"></div>
+          <div class="checkin-circle pulse ${theme}" style="">
+            <span class="material-icons-round" style="color:${theme==='light'?'white':theme==='deep'?'#9D8BC7':'#B5A6E0'};font-size:34px;margin-bottom:5px">touch_app</span>
+            <span style="color:white;font-size:13px;font-weight:800">点击签到</span>
+            <span style="color:${theme==='light'?'rgba(255,255,255,0.7)':T.acc};font-size:10px;margin-top:2px;opacity:.8">今日未签到</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px">
+        <div style="background:${T.card};border-radius:13px;padding:10px;text-align:center;border:1px solid ${T.border};box-shadow:${T.shadow}">
+          <span class="material-icons-round" style="color:#FB923C;font-size:18px">local_fire_department</span>
+          <p style="color:#FB923C;font-size:20px;font-weight:900;line-height:1.2">3</p>
+          <p style="color:${T.textTer};font-size:8px;font-weight:600;margin-top:2px">连续天数</p>
+        </div>
+        <div style="background:${T.card};border-radius:13px;padding:10px;text-align:center;border:1px solid ${T.border};box-shadow:${T.shadow}">
+          <span class="material-icons-round" style="color:${T.acc};font-size:18px">calendar_month</span>
+          <p style="color:${T.acc};font-size:20px;font-weight:900;line-height:1.2">8</p>
+          <p style="color:${T.textTer};font-size:8px;font-weight:600;margin-top:2px">本月签到</p>
+        </div>
+        <div style="background:${T.card};border-radius:13px;padding:10px;text-align:center;border:1px solid ${T.border};box-shadow:${T.shadow}">
+          <span class="material-icons-round" style="color:${T.acc};font-size:18px">emoji_events</span>
+          <p style="color:${T.acc};font-size:20px;font-weight:900;line-height:1.2">12</p>
+          <p style="color:${T.textTer};font-size:8px;font-weight:600;margin-top:2px">累计签到</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:${T.warnBg};border:1px solid ${T.warnBorder};border-radius:13px;margin-bottom:10px">
+        <span class="material-icons-round" style="color:${T.warnIcon};font-size:16px;flex-shrink:0">notifications_active</span>
+        <p style="color:${T.warnText};font-size:10px;font-weight:500;line-height:1.6">今日还未签到，联系人可能收到提醒</p>
+      </div>
+      <div style="background:${T.card};border-radius:16px;padding:14px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <p style="color:${T.textPri};font-weight:700;font-size:12px">签到记录</p>
+          <span style="color:${T.acc};font-size:10px">2026年2月</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px">
+          ${['日','一','二','三','四','五','六'].map(w=>`<div style="text-align:center;font-size:8px;color:${T.textTer};font-weight:600;padding:2px 0">${w}</div>`).join('')}
+        </div>
+        <div id="cal-${theme}" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px 0"></div>
+      </div>
+    </div>`;
+
+  if (page === 'contacts') return `
+    <div style="background:${T.guestBg};border-bottom:1px solid ${T.guestBorder};padding:6px 16px;display:flex;align-items:center;gap:7px">
+      <span class="material-icons-round" style="color:${T.guestText};font-size:13px">visibility</span>
+      <span style="color:${T.guestText};font-size:11px;font-weight:600;flex:1">试用模式</span>
+      <button style="font-size:10px;font-weight:700;color:white;background:${T.guestBtn};padding:3px 9px;border-radius:7px">去登录</button>
+    </div>
+    <div style="${px};padding-top:14px">
+      <div style="margin-bottom:14px">
+        <p style="color:${T.textPri};font-size:18px;font-weight:900;margin-bottom:2px">紧急联系人</p>
+        <p style="color:${T.textSec};font-size:11px">连续2天未签到将自动通知</p>
+      </div>
+      <div style="background:${T.card};border-radius:16px;padding:14px;margin-bottom:10px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:42px;height:42px;border-radius:14px;background:${T.accLight};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:${T.acc};font-size:18px;font-weight:800">张</span>
+          </div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px">
+              <span style="color:${T.textPri};font-weight:700;font-size:14px">张妈妈</span>
+              <span style="font-size:10px;color:${T.acc};background:${T.accLight};padding:2px 7px;border-radius:9px;font-weight:600">家人</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:3px">
+              <span class="material-icons-round" style="color:${T.textTer};font-size:11px">smartphone</span>
+              <span style="color:${T.textSec};font-size:11px">138 **** 8888</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 10px;background:${theme==='light'?'#F0FDF4':'rgba(74,222,128,0.06)'};border:1px solid ${theme==='light'?'#BBF7D0':'rgba(74,222,128,0.15)'};border-radius:10px">
+          <span class="material-icons-round" style="color:#4ADE80;font-size:14px">verified</span>
+          <span style="color:${theme==='light'?'#166534':'rgba(74,222,128,0.8)'};font-size:10px;font-weight:600">已关联 · 从未触发通知</span>
+        </div>
+      </div>
+      <div style="background:${T.card};border-radius:14px;padding:14px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <p style="color:${T.textPri};font-weight:700;font-size:12px;margin-bottom:10px;display:flex;align-items:center;gap:5px">
+          <span class="material-icons-round" style="color:${T.acc};font-size:14px">help_outline</span>通知机制
+        </p>
+        ${[['1','连续 2天 未签到触发'],['2','优先短信，失败发邮件'],['3','凌晨1点自动检查']].map(([n,t])=>`
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px">
+          <div style="width:18px;height:18px;border-radius:50%;background:${accGrad};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="color:white;font-size:9px;font-weight:800">${n}</span>
+          </div>
+          <p style="color:${T.textSec};font-size:11px;line-height:1.6">${t}</p>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  if (page === 'profile') return `
+    <div style="background:${T.guestBg};border-bottom:1px solid ${T.guestBorder};padding:6px 16px;display:flex;align-items:center;gap:7px">
+      <span class="material-icons-round" style="color:${T.guestText};font-size:13px">visibility</span>
+      <span style="color:${T.guestText};font-size:11px;font-weight:600;flex:1">试用模式</span>
+      <button style="font-size:10px;font-weight:700;color:white;background:${T.guestBtn};padding:3px 9px;border-radius:7px">去登录</button>
+    </div>
+    <div style="${px};padding-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <p style="color:${T.textPri};font-size:18px;font-weight:900">我的</p>
+        <div style="width:32px;height:32px;border-radius:11px;background:${T.card};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center">
+          <span class="material-icons-round" style="color:${T.textSec};font-size:16px">settings</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px">
+        <div style="position:relative;margin-bottom:10px">
+          <div style="width:72px;height:72px;border-radius:24px;background:${accGrad};display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(74,123,255,0.35)">
+            <span style="color:white;font-size:28px;font-weight:900">游</span>
+          </div>
+          <div style="position:absolute;bottom:-3px;right:-3px;width:22px;height:22px;border-radius:50%;background:${theme==='light'?'white':T.bg};border:2px solid ${T.border};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.acc};font-size:11px">edit</span>
+          </div>
+        </div>
+        <p style="color:${T.textPri};font-size:18px;font-weight:900;margin-bottom:2px">体验用户</p>
+        <p style="color:${T.textSec};font-size:12px">未登录</p>
+      </div>
+      <div style="background:${T.card};border-radius:16px;margin-bottom:10px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        ${[['smartphone','手机号','未登录'],['calendar_today','注册时间','试用中'],['verified_user','账号状态','试用中']].map(([icon,label,val],i)=>`
+        ${i>0?`<div style="height:1px;background:${T.sepColor};margin:0 14px"></div>`:''}
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+          <div style="width:28px;height:28px;border-radius:9px;background:${T.accLight};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.acc};font-size:14px">${icon}</span>
+          </div>
+          <span style="color:${T.textSec};font-size:12px;flex:1">${label}</span>
+          <span style="color:${T.textTer};font-size:12px">${val}</span>
+        </div>`).join('')}
+      </div>
+      <div style="padding:14px;border-radius:16px;background:${T.accLight};border:1px solid ${T.border}">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+          <span class="material-icons-round" style="color:${T.acc};font-size:16px">shield</span>
+          <p style="color:${T.acc};font-weight:700;font-size:12px">安全守护</p>
+        </div>
+        <p style="color:${T.textSec};font-size:11px;line-height:1.7">每日签到让紧急联系人放心。连续 2 天未签到，系统将自动发送提醒。</p>
+      </div>
+    </div>`;
+
+  if (page === 'settings') return `
+    <div style="${px};padding-top:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+        <div style="width:30px;height:30px;border-radius:10px;background:${T.card};border:1px solid ${T.border};display:flex;align-items:center;justify-content:center">
+          <span class="material-icons-round" style="color:${T.textSec};font-size:16px">arrow_back</span>
+        </div>
+        <p style="color:${T.textPri};font-size:18px;font-weight:900">设置</p>
+      </div>
+      <p class="${theme} section-title" style="margin-bottom:7px;padding:0 2px">账号</p>
+      <div style="background:${T.card};border-radius:14px;margin-bottom:14px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+          <div style="width:28px;height:28px;border-radius:9px;background:${T.accLight};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.acc};font-size:14px">smartphone</span>
+          </div>
+          <span style="color:${T.textSec};font-size:12px;flex:1">当前账号</span>
+          <span style="color:${T.textTer};font-size:12px">未登录</span>
+        </div>
+      </div>
+      <p class="${theme} section-title" style="margin-bottom:7px;padding:0 2px">通知</p>
+      <div style="background:${T.card};border-radius:14px;margin-bottom:14px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+          <div style="width:28px;height:28px;border-radius:9px;background:${T.accLight};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.acc};font-size:14px">notifications</span>
+          </div>
+          <span style="color:${T.textSec};font-size:12px;flex:1">推送通知</span>
+          <div class="${theme} toggle-on"></div>
+        </div>
+      </div>
+      <p class="${theme} section-title" style="margin-bottom:7px;padding:0 2px">关于</p>
+      <div style="background:${T.card};border-radius:14px;margin-bottom:16px;border:1px solid ${T.border};box-shadow:${T.shadow}">
+        ${[['description','用户协议'],['security','隐私政策'],['info','关于称平安']].map(([icon,label],i)=>`
+        ${i>0?`<div style="height:1px;background:${T.sepColor};margin:0 14px"></div>`:''}
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer">
+          <div style="width:28px;height:28px;border-radius:9px;background:${T.accLight};display:flex;align-items:center;justify-content:center">
+            <span class="material-icons-round" style="color:${T.acc};font-size:14px">${icon}</span>
+          </div>
+          <span style="color:${T.textSec};font-size:12px;flex:1">${label}</span>
+          <span class="material-icons-round" style="color:${T.textTer};font-size:17px">chevron_right</span>
+        </div>`).join('')}
+      </div>
+      <div class="${theme} logout-btn" style="cursor:pointer">
+        <span class="material-icons-round" style="color:#EF4444;font-size:17px">logout</span>
+        <span style="color:#EF4444;font-weight:700;font-size:13px">退出登录</span>
+      </div>
+      <p style="text-align:center;color:${T.textTer};font-size:10px;margin-top:16px">称平安 v1.0.0 · 让每一天都安心</p>
+    </div>`;
+
+  return '';
+}
+
+function buildCal(theme) {
+  const el = document.getElementById('cal-'+theme);
+  if (!el) return;
+  const T = { light:{checked:'linear-gradient(135deg,#7A6F9B,#5E5480)',today:'transparent',todayBorder:'#7A6F9B',normal:'#F0EDF8',textC:'white',textT:'#7A6F9B',textN:'#A09AB8'},
+    deep:{checked:'linear-gradient(135deg,#9D8BC7,#7060A8)',today:'transparent',todayBorder:'#9D8BC7',normal:'rgba(255,255,255,0.06)',textC:'white',textT:'#9D8BC7',textN:'#B9B4C9'},
+    night:{checked:'linear-gradient(135deg,#B5A6E0,#8070C0)',today:'transparent',todayBorder:'#B5A6E0',normal:'rgba(255,255,255,0.04)',textC:'white',textT:'#B5A6E0',textN:'rgba(206,201,222,0.5)'} }[theme];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const checked = new Set();
+  for(let i=1;i<=20;i+=2){const d=new Date(today);d.setDate(d.getDate()-i);checked.add(d.toISOString().slice(0,10));}
+  const start=new Date(today);start.setDate(today.getDate()-34);start.setDate(start.getDate()-start.getDay());
+  el.innerHTML='';
+  for(let i=0;i<35;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const ds=d.toISOString().slice(0,10);
+    const isT=d.getTime()===today.getTime(), isFut=d>today, isC=checked.has(ds);
+    const bg=isC?T.checked:isT?T.today:T.normal;
+    const col=isC?T.textC:isT?T.textT:T.textN;
+    const brd=isT?`2px solid ${T.todayBorder}`:'none';
+    const cell=document.createElement('div');
+    cell.style.cssText='display:flex;justify-content:center';
+    cell.innerHTML=`<div style="width:22px;height:22px;border-radius:50%;background:${bg};color:${col};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:${isC||isT?700:400};border:${brd};opacity:${isFut?.3:1}">${d.getDate()}</div>`;
+    el.appendChild(cell);
+  }
+}
+
+let currentPage = 'login';
+
+function switchPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.pnav').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.pnav').forEach(b=>{if(b.getAttribute('onclick').includes("'"+page+"'"))b.classList.add('on');});
+  ['light','deep','night'].forEach(theme=>{
+    document.getElementById(theme+'-content').innerHTML = buildPage(theme, page);
+    if(page==='home') buildCal(theme);
+    // update tab active state
+    const tabEl = document.getElementById('tab-'+theme);
+    if(!tabEl) return;
+    const icons = tabEl.querySelectorAll('.tab-item');
+    const accs={light:'#7A6F9B',deep:'#9D8BC7',night:'#B5A6E0'};
+    const inacts={light:'#A09AB8',deep:'#B9B4C9',night:'#CEC9DE'};
+    const map=['home','contacts','profile'];
+    icons.forEach((item,i)=>{
+      const isActive=map[i]===page||(page==='settings'&&i===2);
+      item.querySelectorAll('span')[0].style.color=isActive?accs[theme]:inacts[theme];
+      item.querySelectorAll('span')[1].style.color=isActive?accs[theme]:inacts[theme];
+    });
+  });
+}
+
+// init
+switchPage('login');
+</script>
+</body>
+</html>

@@ -25,13 +25,35 @@ brew install postgresql@14 redis
 # 启动服务
 brew services start postgresql@14
 brew services start redis
+```
 
+> **注意：createuser / createdb 路径因芯片不同而异**
+
+**Apple Silicon Mac（M1 / M2 / M3，默认）**
+```bash
+# 创建 postgres 用户（如果不存在）
+/opt/homebrew/opt/postgresql@14/bin/createuser -s postgres
+
+# 创建数据库
+/opt/homebrew/opt/postgresql@14/bin/createdb pingan_dev
+```
+
+**Intel Mac**
+```bash
 # 创建 postgres 用户（如果不存在）
 /usr/local/opt/postgresql@14/bin/createuser -s postgres
 
 # 创建数据库
 /usr/local/opt/postgresql@14/bin/createdb pingan_dev
 ```
+
+> 也可以直接用命令（两种芯片通用，前提是 `brew` 已加入 PATH）：
+> ```bash
+> createuser -s postgres
+> createdb pingan_dev
+> ```
+>
+> 不确定自己的芯片类型？运行 `uname -m`：输出 `arm64` = Apple Silicon，`x86_64` = Intel
 
 ### 2. 启动后端服务
 
@@ -49,7 +71,9 @@ cp .env.example .env
 npm run start:dev
 ```
 
-服务将在 http://localhost:3000 启动。
+服务将在 http://localhost:5210 启动。
+
+http://localhost:5210/api-docs 访问swagger文档。
 
 ### 3. 测试接口
 
@@ -96,7 +120,7 @@ docker run --name pingan-redis \
 
 ---
 
-## 📱 启动移动端（待开发）
+## 📱 启动移动端
 
 ```bash
 # 进入移动端目录
@@ -108,6 +132,12 @@ npm install
 # 启动 Expo 开发服务器
 npx expo start
 ```
+
+> **真机调试注意**：将 `mobile/src/config.ts` 中的 `DEV_API_URL` 改为本机局域网 IP，例如：
+> ```ts
+> const DEV_API_URL = 'http://192.168.x.x:3000';
+> ```
+> 模拟器可直接使用 `http://localhost:3000`。
 
 ---
 
@@ -141,4 +171,4 @@ kill -9 <PID>
 
 ---
 
-**最后更新**: 2026-01-23 14:53
+**最后更新**: 2026-02-28

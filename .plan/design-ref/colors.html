@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>称平安 · 配色方案选择</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    * { font-family: 'Noto Sans SC', sans-serif; }
+    .phone-frame {
+      width: 320px; height: 680px; border-radius: 40px;
+      box-shadow: 0 0 0 8px #1a1a1a, 0 0 0 10px #333, 0 32px 64px rgba(0,0,0,0.3);
+      overflow: hidden; position: relative; flex-shrink: 0; transition: all 0.3s;
+    }
+    .phone-screen { width: 100%; height: 100%; overflow-y: auto; }
+    .phone-screen::-webkit-scrollbar { display: none; }
+    .theme-btn {
+      padding: 10px 20px; border-radius: 14px; font-size: 13px; font-weight: 700;
+      cursor: pointer; border: 2.5px solid transparent; transition: all 0.25s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .theme-btn.active { border-color: currentColor; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .swatch { width: 28px; height: 28px; border-radius: 50%; }
+    .tab-bar { height: 68px; display: flex; align-items: flex-start; padding-top: 8px; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.06); }
+    .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .tab-item span:last-child { font-size: 9px; font-weight: 600; }
+    .card-rn { background: white; border-radius: 18px; box-shadow: 0 2px 16px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.03); }
+    /* Stat card top border transitions */
+    .transition-all { transition: all 0.35s ease; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-100 py-10 px-6">
+
+  <div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-10 animate__animated animate__fadeInDown">
+      <h1 class="text-2xl font-black text-slate-800 mb-1">选择主色调</h1>
+      <p class="text-slate-400 text-sm">点击色板切换预览，选中你喜欢的方案</p>
+    </div>
+
+    <!-- Color scheme selector -->
+    <div class="flex justify-center gap-4 mb-10 flex-wrap animate__animated animate__fadeIn">
+
+      <button class="theme-btn active" id="btn-blue" onclick="applyTheme('blue')" style="color:#2563EB;background:#EFF6FF">
+        <div class="flex gap-1.5">
+          <div class="swatch" style="background:#93C5FD"></div>
+          <div class="swatch" style="background:#2563EB"></div>
+          <div class="swatch" style="background:#1E3A8A"></div>
+        </div>
+        <span style="color:#1E3A8A">方案 A</span>
+        <span style="font-size:12px;color:#2563EB;font-weight:600">靛蓝 · 可信赖</span>
+      </button>
+
+      <button class="theme-btn" id="btn-amber" onclick="applyTheme('amber')" style="color:#D97706;background:#FFFBEB">
+        <div class="flex gap-1.5">
+          <div class="swatch" style="background:#FCD34D"></div>
+          <div class="swatch" style="background:#D97706"></div>
+          <div class="swatch" style="background:#92400E"></div>
+        </div>
+        <span style="color:#92400E">方案 B</span>
+        <span style="font-size:12px;color:#D97706;font-weight:600">琥珀 · 温暖感</span>
+      </button>
+
+      <button class="theme-btn" id="btn-rose" onclick="applyTheme('rose')" style="color:#E11D48;background:#FFF1F2">
+        <div class="flex gap-1.5">
+          <div class="swatch" style="background:#FDA4AF"></div>
+          <div class="swatch" style="background:#E11D48"></div>
+          <div class="swatch" style="background:#881337"></div>
+        </div>
+        <span style="color:#881337">方案 C</span>
+        <span style="font-size:12px;color:#E11D48;font-weight:600">玫瑰 · 温情感</span>
+      </button>
+
+      <button class="theme-btn" id="btn-indigo" onclick="applyTheme('indigo')" style="color:#4F46E5;background:#EEF2FF">
+        <div class="flex gap-1.5">
+          <div class="swatch" style="background:#A5B4FC"></div>
+          <div class="swatch" style="background:#4F46E5"></div>
+          <div class="swatch" style="background:#312E81"></div>
+        </div>
+        <span style="color:#312E81">方案 D</span>
+        <span style="font-size:12px;color:#4F46E5;font-weight:600">深靛 · 沉稳感</span>
+      </button>
+
+    </div>
+
+    <!-- 4 phones side by side showing checkin button & stats -->
+    <div class="flex justify-center gap-6 flex-wrap animate__animated animate__fadeInUp">
+
+      <!-- Phone A: 靛蓝 Blue -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">方案 A · 靛蓝</span>
+        <div class="phone-frame" id="phone-blue">
+          <div class="phone-screen" style="background:linear-gradient(180deg,#EFF6FF 0%,#F8FAFC 60%)">
+            <div style="height:36px;flex-shrink:0;padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;font-weight:700;color:#1E3A8A">称平安</span>
+              <div style="display:flex;gap:4px">
+                <div style="width:6px;height:6px;border-radius:50%;background:#2563EB"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#2563EB;opacity:.5"></div>
+              </div>
+            </div>
+            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <p style="font-size:10px;color:#94A3B8;font-weight:500">下午好</p>
+                <p style="font-size:16px;font-weight:900;color:#1E3A8A">体验用户</p>
+              </div>
+              <div style="width:34px;height:34px;border-radius:12px;background:#DBEAFE;display:flex;align-items:center;justify-content:center">
+                <span class="material-icons-round" style="color:#2563EB;font-size:18px">person</span>
+              </div>
+            </div>
+            <!-- Checkin btn -->
+            <div style="display:flex;justify-content:center;padding:20px 0 16px">
+              <div style="width:140px;height:140px;border-radius:70px;background:linear-gradient(145deg,#3B82F6,#1E3A8A);box-shadow:0 12px 36px rgba(37,99,235,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer">
+                <span class="material-icons-round" style="color:white;font-size:32px;margin-bottom:4px">touch_app</span>
+                <span style="color:white;font-size:13px;font-weight:800">点击签到</span>
+                <span style="color:#93C5FD;font-size:10px;margin-top:2px">今日未签到</span>
+              </div>
+            </div>
+            <!-- Stats -->
+            <div style="display:flex;gap:8px;padding:0 14px;margin-bottom:12px">
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #F59E0B">
+                <span class="material-icons-round" style="color:#F59E0B;font-size:18px">local_fire_department</span>
+                <p style="font-size:18px;font-weight:900;color:#F59E0B">3</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">连续天数</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #2563EB">
+                <span class="material-icons-round" style="color:#2563EB;font-size:18px">calendar_month</span>
+                <p style="font-size:18px;font-weight:900;color:#2563EB">8</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">本月签到</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #2563EB">
+                <span class="material-icons-round" style="color:#2563EB;font-size:18px">emoji_events</span>
+                <p style="font-size:18px;font-weight:900;color:#2563EB">12</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">累计签到</p>
+              </div>
+            </div>
+            <!-- Banner -->
+            <div style="margin:0 14px;padding:10px 12px;background:#EFF6FF;border-radius:14px;display:flex;align-items:center;gap:8px">
+              <span class="material-icons-round" style="color:#2563EB;font-size:16px">notifications_active</span>
+              <span style="font-size:10px;color:#1E3A8A;font-weight:500">今日还未签到，记得打卡哦</span>
+            </div>
+            <!-- Tab -->
+            <div style="position:absolute;bottom:0;left:0;right:0" class="tab-bar">
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#2563EB;font-size:22px">check_circle</span>
+                <span style="color:#2563EB">签到</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">people_alt</span>
+                <span style="color:#94A3B8">联系人</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">account_circle</span>
+                <span style="color:#94A3B8">我的</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div style="width:20px;height:20px;border-radius:50%;background:#93C5FD"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#2563EB"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#1E3A8A"></div>
+        </div>
+        <p class="text-xs text-center text-slate-500 max-w-[160px]">清澈可信赖<br>适合科技类 App</p>
+      </div>
+
+      <!-- Phone B: 琥珀 Amber -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">方案 B · 琥珀</span>
+        <div class="phone-frame">
+          <div class="phone-screen" style="background:linear-gradient(180deg,#FFFBEB 0%,#FAFAF8 60%)">
+            <div style="height:36px;padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;font-weight:700;color:#92400E">称平安</span>
+              <div style="display:flex;gap:4px">
+                <div style="width:6px;height:6px;border-radius:50%;background:#D97706"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#D97706;opacity:.5"></div>
+              </div>
+            </div>
+            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <p style="font-size:10px;color:#94A3B8;font-weight:500">下午好</p>
+                <p style="font-size:16px;font-weight:900;color:#92400E">体验用户</p>
+              </div>
+              <div style="width:34px;height:34px;border-radius:12px;background:#FEF3C7;display:flex;align-items:center;justify-content:center">
+                <span class="material-icons-round" style="color:#D97706;font-size:18px">person</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;padding:20px 0 16px">
+              <div style="width:140px;height:140px;border-radius:70px;background:linear-gradient(145deg,#FBBF24,#92400E);box-shadow:0 12px 36px rgba(217,119,6,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer">
+                <span class="material-icons-round" style="color:white;font-size:32px;margin-bottom:4px">touch_app</span>
+                <span style="color:white;font-size:13px;font-weight:800">点击签到</span>
+                <span style="color:#FDE68A;font-size:10px;margin-top:2px">今日未签到</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;padding:0 14px;margin-bottom:12px">
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #D97706">
+                <span class="material-icons-round" style="color:#D97706;font-size:18px">local_fire_department</span>
+                <p style="font-size:18px;font-weight:900;color:#D97706">3</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">连续天数</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #D97706">
+                <span class="material-icons-round" style="color:#D97706;font-size:18px">calendar_month</span>
+                <p style="font-size:18px;font-weight:900;color:#D97706">8</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">本月签到</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #D97706">
+                <span class="material-icons-round" style="color:#D97706;font-size:18px">emoji_events</span>
+                <p style="font-size:18px;font-weight:900;color:#D97706">12</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">累计签到</p>
+              </div>
+            </div>
+            <div style="margin:0 14px;padding:10px 12px;background:#FFFBEB;border-radius:14px;display:flex;align-items:center;gap:8px">
+              <span class="material-icons-round" style="color:#D97706;font-size:16px">notifications_active</span>
+              <span style="font-size:10px;color:#92400E;font-weight:500">今日还未签到，记得打卡哦</span>
+            </div>
+            <div style="position:absolute;bottom:0;left:0;right:0" class="tab-bar">
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#D97706;font-size:22px">check_circle</span>
+                <span style="color:#D97706">签到</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">people_alt</span>
+                <span style="color:#94A3B8">联系人</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">account_circle</span>
+                <span style="color:#94A3B8">我的</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div style="width:20px;height:20px;border-radius:50%;background:#FCD34D"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#D97706"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#92400E"></div>
+        </div>
+        <p class="text-xs text-center text-slate-500 max-w-[160px]">温暖如阳光<br>情感亲近感强</p>
+      </div>
+
+      <!-- Phone C: 玫瑰 Rose -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">方案 C · 玫瑰</span>
+        <div class="phone-frame">
+          <div class="phone-screen" style="background:linear-gradient(180deg,#FFF1F2 0%,#FAFAFA 60%)">
+            <div style="height:36px;padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;font-weight:700;color:#881337">称平安</span>
+              <div style="display:flex;gap:4px">
+                <div style="width:6px;height:6px;border-radius:50%;background:#E11D48"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#E11D48;opacity:.5"></div>
+              </div>
+            </div>
+            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <p style="font-size:10px;color:#94A3B8;font-weight:500">下午好</p>
+                <p style="font-size:16px;font-weight:900;color:#881337">体验用户</p>
+              </div>
+              <div style="width:34px;height:34px;border-radius:12px;background:#FFE4E6;display:flex;align-items:center;justify-content:center">
+                <span class="material-icons-round" style="color:#E11D48;font-size:18px">person</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;padding:20px 0 16px">
+              <div style="width:140px;height:140px;border-radius:70px;background:linear-gradient(145deg,#FB7185,#881337);box-shadow:0 12px 36px rgba(225,29,72,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer">
+                <span class="material-icons-round" style="color:white;font-size:32px;margin-bottom:4px">favorite</span>
+                <span style="color:white;font-size:13px;font-weight:800">点击签到</span>
+                <span style="color:#FDA4AF;font-size:10px;margin-top:2px">今日未签到</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;padding:0 14px;margin-bottom:12px">
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #F59E0B">
+                <span class="material-icons-round" style="color:#F59E0B;font-size:18px">local_fire_department</span>
+                <p style="font-size:18px;font-weight:900;color:#F59E0B">3</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">连续天数</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #3B82F6">
+                <span class="material-icons-round" style="color:#3B82F6;font-size:18px">calendar_month</span>
+                <p style="font-size:18px;font-weight:900;color:#3B82F6">8</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">本月签到</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #E11D48">
+                <span class="material-icons-round" style="color:#E11D48;font-size:18px">emoji_events</span>
+                <p style="font-size:18px;font-weight:900;color:#E11D48">12</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">累计签到</p>
+              </div>
+            </div>
+            <div style="margin:0 14px;padding:10px 12px;background:#FFF1F2;border-radius:14px;display:flex;align-items:center;gap:8px">
+              <span class="material-icons-round" style="color:#E11D48;font-size:16px">favorite_border</span>
+              <span style="font-size:10px;color:#881337;font-weight:500">今日还未签到，记得打卡哦</span>
+            </div>
+            <div style="position:absolute;bottom:0;left:0;right:0" class="tab-bar">
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#E11D48;font-size:22px">check_circle</span>
+                <span style="color:#E11D48">签到</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">people_alt</span>
+                <span style="color:#94A3B8">联系人</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">account_circle</span>
+                <span style="color:#94A3B8">我的</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div style="width:20px;height:20px;border-radius:50%;background:#FDA4AF"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#E11D48"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#881337"></div>
+        </div>
+        <p class="text-xs text-center text-slate-500 max-w-[160px]">温情关怀感<br>适合情感类 App</p>
+      </div>
+
+      <!-- Phone D: 深靛 Indigo -->
+      <div class="flex flex-col items-center gap-3">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">方案 D · 深靛</span>
+        <div class="phone-frame">
+          <div class="phone-screen" style="background:linear-gradient(180deg,#EEF2FF 0%,#F8FAFC 60%)">
+            <div style="height:36px;padding:8px 20px 0;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;font-weight:700;color:#312E81">称平安</span>
+              <div style="display:flex;gap:4px">
+                <div style="width:6px;height:6px;border-radius:50%;background:#4F46E5"></div>
+                <div style="width:6px;height:6px;border-radius:50%;background:#4F46E5;opacity:.5"></div>
+              </div>
+            </div>
+            <div style="padding:12px 18px 0;display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <p style="font-size:10px;color:#94A3B8;font-weight:500">下午好</p>
+                <p style="font-size:16px;font-weight:900;color:#312E81">体验用户</p>
+              </div>
+              <div style="width:34px;height:34px;border-radius:12px;background:#E0E7FF;display:flex;align-items:center;justify-content:center">
+                <span class="material-icons-round" style="color:#4F46E5;font-size:18px">person</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:center;padding:20px 0 16px">
+              <div style="width:140px;height:140px;border-radius:70px;background:linear-gradient(145deg,#818CF8,#312E81);box-shadow:0 12px 36px rgba(79,70,229,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer">
+                <span class="material-icons-round" style="color:white;font-size:32px;margin-bottom:4px">touch_app</span>
+                <span style="color:white;font-size:13px;font-weight:800">点击签到</span>
+                <span style="color:#A5B4FC;font-size:10px;margin-top:2px">今日未签到</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;padding:0 14px;margin-bottom:12px">
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #F59E0B">
+                <span class="material-icons-round" style="color:#F59E0B;font-size:18px">local_fire_department</span>
+                <p style="font-size:18px;font-weight:900;color:#F59E0B">3</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">连续天数</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #4F46E5">
+                <span class="material-icons-round" style="color:#4F46E5;font-size:18px">calendar_month</span>
+                <p style="font-size:18px;font-weight:900;color:#4F46E5">8</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">本月签到</p>
+              </div>
+              <div class="card-rn" style="flex:1;padding:10px;border-top:3px solid #4F46E5">
+                <span class="material-icons-round" style="color:#4F46E5;font-size:18px">emoji_events</span>
+                <p style="font-size:18px;font-weight:900;color:#4F46E5">12</p>
+                <p style="font-size:9px;color:#94A3B8;font-weight:500">累计签到</p>
+              </div>
+            </div>
+            <div style="margin:0 14px;padding:10px 12px;background:#EEF2FF;border-radius:14px;display:flex;align-items:center;gap:8px">
+              <span class="material-icons-round" style="color:#4F46E5;font-size:16px">notifications_active</span>
+              <span style="font-size:10px;color:#312E81;font-weight:500">今日还未签到，记得打卡哦</span>
+            </div>
+            <div style="position:absolute;bottom:0;left:0;right:0" class="tab-bar">
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#4F46E5;font-size:22px">check_circle</span>
+                <span style="color:#4F46E5">签到</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">people_alt</span>
+                <span style="color:#94A3B8">联系人</span>
+              </div>
+              <div class="tab-item">
+                <span class="material-icons-round" style="color:#94A3B8">account_circle</span>
+                <span style="color:#94A3B8">我的</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div style="width:20px;height:20px;border-radius:50%;background:#A5B4FC"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#4F46E5"></div>
+          <div style="width:20px;height:20px;border-radius:50%;background:#312E81"></div>
+        </div>
+        <p class="text-xs text-center text-slate-500 max-w-[160px]">沉稳高级感<br>适合商务/安全类</p>
+      </div>
+
+    </div>
+
+    <!-- 选择提示 -->
+    <div class="text-center mt-12 bg-white rounded-2xl p-6 max-w-lg mx-auto shadow-sm">
+      <p class="font-bold text-slate-700 mb-2">选好了告诉我哪个方案</p>
+      <p class="text-sm text-slate-400">我会立即把所有 RN 页面的颜色全部替换，包括按钮、图标、渐变、shadow 颜色</p>
+    </div>
+  </div>
+
+  <script>
+    function applyTheme(t) {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-'+t).classList.add('active');
+    }
+  </script>
+</body>
+</html>
